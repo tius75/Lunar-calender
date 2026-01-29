@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Lunar Indonesia Super Komplit</title>
+    <title>Kalender Lunar & Analisis BaZi 2576</title>
     <style>
         :root {
             --merah-tua: #8b0000;
@@ -33,7 +33,7 @@
             overflow: hidden;
         }
 
-        /* Fitur Cari Tanggal */
+        /* Search Section */
         .search-bar {
             background: var(--krem);
             padding: 15px;
@@ -47,7 +47,6 @@
             padding: 10px;
             border: 1px solid var(--emas);
             border-radius: 8px;
-            font-size: 1rem;
         }
 
         .btn-cari {
@@ -84,7 +83,7 @@
             font-weight: bold;
         }
 
-        /* Grid Kalender */
+        /* Grid */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -109,17 +108,15 @@
             justify-content: center;
             cursor: pointer;
             background: white;
-            transition: 0.2s;
         }
 
-        .sel-tanggal:hover { background: #fff5f5; }
         .sel-tanggal.hari-ini { background: var(--merah-terang); color: var(--emas); }
         .sel-tanggal.pilihan { border: 2px solid var(--merah-tua); background: #ffebeb; }
 
         .tgl-masehi { font-size: 1.1rem; font-weight: bold; }
-        .tgl-lunar-kecil { font-size: 0.65rem; color: var(--merah-tua); text-align: center; }
+        .tgl-lunar-kecil { font-size: 0.65rem; color: var(--merah-tua); }
 
-        /* Detail Panel */
+        /* Panel Detail & BaZi */
         #panelDetail {
             padding: 15px;
             background: var(--putih);
@@ -134,36 +131,31 @@
             border-left: 5px solid var(--merah-tua);
         }
 
-        .grid-info {
+        .grid-detail {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin: 15px 0;
         }
 
-        .info-item {
+        .item-detail {
             background: white;
             padding: 8px;
             border-radius: 8px;
             border: 1px solid #eee;
-            min-height: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
-        .label-kecil { font-size: 0.7rem; color: #888; }
-        .isi-item { font-size: 0.85rem; font-weight: bold; color: #333; }
+        .label-detail { font-size: 0.7rem; color: #888; display: block; }
+        .isi-detail { font-size: 0.85rem; font-weight: bold; color: #333; }
 
-        .ramalan-box {
-            margin-top: 10px;
-            padding: 12px;
-            background: #fff;
-            border-radius: 8px;
-            border: 1px dashed var(--emas);
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--merah-tua);
+            border-bottom: 1px solid var(--emas);
+            margin-bottom: 8px;
+            padding-bottom: 3px;
         }
-
-        #shioUtama { font-size: 1.5rem; font-weight: bold; color: var(--merah-tua); margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -186,28 +178,24 @@
 
         <div id="panelDetail">
             <div class="kartu-info">
-                <div id="shioUtama">Shio</div>
-                <div id="elemenBadge" style="color: var(--merah-terang); font-weight: bold; font-size: 0.9rem; margin-bottom: 10px;"></div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: var(--merah-tua);" id="displayShio"></div>
+                <div id="displayElemen" style="font-weight: bold; color: var(--merah-terang); margin-bottom: 10px;"></div>
                 
-                <div id="tglLengkapMasehi" style="font-weight: bold;"></div>
-                <div id="tglLengkapLunar"></div>
-                
-                <div class="grid-info">
-                    <div class="info-item"><span class="label-kecil">Batang Langit</span><span class="isi-item" id="btgLangit"></span></div>
-                    <div class="info-item"><span class="label-kecil">Cabang Bumi</span><span class="isi-item" id="cbgBumi"></span></div>
-                    <div class="info-item"><span class="label-kecil">Arah Rejeki</span><span class="isi-item" id="arahHoki"></span></div>
-                    <div class="info-item"><span class="label-kecil">Zodiak</span><span class="isi-item" id="zodiakBarat"></span></div>
+                <div id="tglMasehi" style="font-weight: bold;"></div>
+                <div id="tglLunarNumerik" style="color: var(--merah-tua); font-weight: bold; font-size: 1.1rem; margin-top: 5px;"></div>
+
+                <div class="grid-detail">
+                    <div class="item-detail"><span class="label-detail">Batang Langit</span><span class="isi-detail" id="btgLangit"></span></div>
+                    <div class="item-detail"><span class="label-detail">Cabang Bumi</span><span class="isi-detail" id="cbgBumi"></span></div>
+                    <div class="item-detail"><span class="label-detail">Arah Rejeki</span><span class="isi-item" id="arahHoki">Utara & Tengah</span></div>
+                    <div class="item-detail"><span class="label-detail">Zodiak</span><span class="isi-detail" id="zodiak"></span></div>
                 </div>
 
-                <div class="ramalan-box">
-                    <div id="infoSembahyang" style="color: var(--merah-terang); font-weight: bold; margin-bottom: 5px;"></div>
-                    <div id="teksRamalan"></div>
-                </div>
+                <div class="section-title">✨ Analisis Peruntungan BaZi</div>
+                <div id="teksBazi" style="font-size: 0.85rem; line-height: 1.5; background: white; padding: 10px; border-radius: 8px; border: 1px dashed var(--emas);"></div>
 
-                <div class="ramalan-box" style="background: #fff5f5;">
-                    <div style="font-weight: bold; color: #8b0000; font-size: 0.9rem; margin-bottom: 5px;">⏰ Jam Keberuntungan Hari Ini:</div>
-                    <div id="jamHoki" style="font-size: 0.85rem; color: #444;"></div>
-                </div>
+                <div class="section-title" style="margin-top:15px">⏰ Jam Keberuntungan</div>
+                <div id="jamHoki" style="font-size: 0.85rem; color: #444;"></div>
             </div>
         </div>
     </div>
@@ -255,34 +243,31 @@
             document.getElementById('panelDetail').style.display = 'block';
             const shio = kamusShio[lunar.getYearShengXiao()] || lunar.getYearShengXiao();
 
-            // Tanggal Lunar Numerik (Permintaan Anda)
-            document.getElementById('shioUtama').innerText = `Shio ${shio}`;
-            document.getElementById('elemenBadge').innerText = `Elemen: ${lunar.getYearNaYin()}`;
-            document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
-            document.getElementById('tglLengkapLunar').innerHTML = `<b style="color:var(--merah-tua)">Lunar: ${lunar.getDay()} - ${lunar.getMonth()} - ${lunar.getYear()}</b>`;
+            // KODE PENGHITUNG TANGGAL CHINESE 2576
+            // Rumus umum Kongzili = Tahun Masehi + 551
+            const tahunKongzili = lunar.getYear() + 551;
+            document.getElementById('tglLunarNumerik').innerText = `Lunar: ${lunar.getDay()} - ${lunar.getMonth()} - ${tahunKongzili}`;
 
-            // Data Teknis Indonesia
-            document.getElementById('btgLangit').innerText = kamusBatang[lunar.getYearGan()];
-            document.getElementById('cbgBumi').innerText = kamusCabang[lunar.getYearZhi()];
-            document.getElementById('zodiakBarat').innerText = kamusZodiak[solar.getXingZuo()];
-            document.getElementById('arahHoki').innerText = `Utara & Tenggara`; // Contoh Arah Rejeki
+            document.getElementById('displayShio').innerText = `Shio ${shio}`;
+            document.getElementById('displayElemen').innerText = `Elemen: ${lunar.getYearNaYin()}`;
+            document.getElementById('tglMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
 
-            // Jam Keberuntungan (Fitur Baru)
-            const jamHokiList = ["00:00-01:00 (Tikus)", "07:00-09:00 (Naga)", "13:00-15:00 (Kambing)", "19:00-21:00 (Anjing)"];
-            document.getElementById('jamHoki').innerText = jamHokiList.join(", ");
-
-            // Sembahyang & Ramalan
-            let info = "✨ Jadwal harian rutin.";
-            if (lunar.getDay() === 1) info = "🏮 Sembahyang Ce It (Awal Bulan)";
-            if (lunar.getDay() === 15) info = "🌕 Sembahyang Cap Go (Purnama)";
+            // Detail Indonesia
+            document.getElementById('btgLangit').innerText = kamusBatang[lunar.getYearGan()] || lunar.getYearGan();
+            document.getElementById('cbgBumi').innerText = kamusCabang[lunar.getYearZhi()] || lunar.getYearZhi();
+            document.getElementById('zodiak').innerText = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
             
-            document.getElementById('infoSembahyang').innerText = info;
-            document.getElementById('teksRamalan').innerText = `Hari yang sangat baik bagi Shio ${shio} untuk melakukan transaksi atau memulai hobi baru.`;
+            // Logika BaZi Sederhana
+            const baziAnalis = `Pilar hari ini didominasi oleh energi ${kamusBatang[lunar.getDayGan()]}. Sangat cocok untuk memulai negosiasi atau kegiatan sosial bagi Shio ${shio}. Perhatikan kesehatan pernapasan di sore hari.`;
+            document.getElementById('teksBazi').innerText = baziAnalis;
+
+            // Jam Hoki
+            document.getElementById('jamHoki').innerText = "01:00-03:00 (Kerbau), 09:00-11:00 (Ular), 15:00-17:00 (Monyet), 21:00-23:00 (Babi)";
 
             document.getElementById('panelDetail').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Fitur Cari Tanggal
+        // Cari Tanggal
         document.getElementById('btnCari').onclick = () => {
             const val = document.getElementById('inputCari').value;
             if(!val) return;
