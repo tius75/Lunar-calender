@@ -242,49 +242,70 @@
     const panel = document.getElementById('panelDetail');
     panel.style.display = 'block';
     
-    // 1. Konversi Nama Shio
-    const shioIndo = {
+    // Kamus Terjemahan
+    const kamusShio = {
         "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci",
         "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing",
         "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi"
     };
-    const shio = shioIndo[lunar.getYearShengXiao()] || lunar.getYearShengXiao();
 
-    // 2. Deteksi Hari Sembahyang / Hari Raya
+    const kamusBatang = {
+        "甲": "Kayu Yang", "乙": "Kayu Yin", "丙": "Api Yang", "丁": "Api Yin",
+        "戊": "Tanah Yang", "己": "Tanah Yin", "庚": "Logam Yang", "辛": "Logam Yin",
+        "壬": "Air Yang", "癸": "Air Yin"
+    };
+
+    const kamusCabang = {
+        "子": "Tikus (Air)", "丑": "Kerbau (Tanah)", "寅": "Macan (Kayu)", "卯": "Kelinci (Kayu)",
+        "辰": "Naga (Tanah)", "巳": "Ular (Api)", "午": "Kuda (Api)", "未": "Kambing (Tanah)",
+        "申": "Monyet (Logam)", "酉": "Ayam (Logam)", "戌": "Anjing (Tanah)", "亥": "Babi (Air)"
+    };
+
+    const kamusZodiak = {
+        "水瓶": "Aquarius", "双鱼": "Pisces", "白羊": "Aries", "金牛": "Taurus",
+        "双子": "Gemini", "巨蟹": "Cancer", "狮子": "Leo", "处女": "Virgo",
+        "天秤": "Libra", "天蝎": "Scorpio", "射手": "Sagitarius", "摩羯": "Capricorn"
+    };
+
+    // Ambil Data & Terjemahkan
+    const shioEn = lunar.getYearShengXiao();
+    const shioIndo = kamusShio[shioEn] || shioEn;
+    const btgLangit = kamusBatang[lunar.getYearGan()] || lunar.getYearGan();
+    const cbgBumi = kamusCabang[lunar.getYearZhi()] || lunar.getYearZhi();
+    const zodiakIndo = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
+
+    // Logika Sembahyang
     let infoSembahyang = "Jadwal rutin harian.";
     const tglLunar = lunar.getDay();
     const blnLunar = lunar.getMonth();
 
     if (tglLunar === 1) infoSembahyang = "Sembahyang Ce It (Awal Bulan)";
     else if (tglLunar === 15) infoSembahyang = "Sembahyang Cap Go (Purnama)";
-
-    // Tambahan Hari Raya Besar (Contoh)
-    if (blnLunar === 1 && tglLunar === 1) infoSembahyang = "Hari Raya Imlek (Sembahyang Tahun Baru)";
-    if (blnLunar === 1 && tglLunar === 15) infoSembahyang = "Cap Go Meh";
-    if (blnLunar === 5 && tglLunar === 5) infoSembahyang = "Sembahyang Peh Cun";
-    if (blnLunar === 8 && tglLunar === 15) infoSembahyang = "Sembahyang Kue Bulan (Tiong Chiu)";
-
-    // 3. Update UI
-    document.getElementById('shioUtama').innerText = `Shio ${shio}`;
-    document.getElementById('elemenBadge').innerText = lunar.getYearNaYin();
     
-    // Tampilan Tanggal Masehi
+    // Hari Raya Besar
+    if (blnLunar === 1 && tglLunar === 1) infoSembahyang = "Tahun Baru Imlek 2577";
+    if (blnLunar === 1 && tglLunar === 15) infoSembahyang = "Cap Go Meh";
+    if (blnLunar === 5 && tglLunar === 5) infoSembahyang = "Sembahyang Peh Cun (Bakcang)";
+    if (blnLunar === 8 && tglLunar === 15) infoSembahyang = "Sembahyang Tiong Chiu (Kue Bulan)";
+
+    // Update Tampilan
+    document.getElementById('shioUtama').innerText = `Shio ${shioIndo}`;
+    document.getElementById('elemenBadge').innerText = lunar.getYearNaYin(); // Contoh: Api Lampu
     document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
     
-    // Tanggal Chinese (Hanzi) & Indonesia
-    const teksLunarFull = `Tahun ${lunar.getYearInGanZhi()} (${lunar.getYearInChinese()}) \n Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
-    document.getElementById('tglLengkapLunar').innerText = teksLunarFull;
-    
-    // Data Teknis
-    document.getElementById('btgLangit').innerText = `${lunar.getYearGan()} (Batang)`;
-    document.getElementById('cbgBumi').innerText = `${lunar.getYearZhi()} (Cabang)`;
-    document.getElementById('zodiakBarat').innerText = solar.getXingZuo();
+    // Tanggal Lunar Format Indonesia
+    const teksLunar = `Tahun ${lunar.getYearInGanZhi()} (${lunar.getYearInChinese()}) \n Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
+    document.getElementById('tglLengkapLunar').innerText = teksLunar;
+
+    document.getElementById('btgLangit').innerText = btgLangit;
+    document.getElementById('cbgBumi').innerText = cbgBumi;
+    document.getElementById('zodiakBarat').innerText = zodiakIndo;
     
     const term = lunar.getJieQi();
     document.getElementById('solarTerm').innerText = term ? term : "Tidak ada fenomena";
-    
-    // Tampilkan Info Sembahyang di area ramalan
-    const ramalanTeks = databaseRamalan[shio] || "Semoga hari ini penuh berkah.";
+
+    // Ramalan & Sembahyang
+    const ramalanTeks = databaseRamalan[shioIndo] || "Semoga hari ini penuh berkah.";
     document.getElementById('teksRamalan').innerHTML = `
         <div style="color: #b30000; font-weight: bold; margin-bottom: 8px;">✨ ${infoSembahyang}</div>
         <div>${ramalanTeks}</div>
@@ -292,6 +313,7 @@
 
     panel.scrollIntoView({ behavior: 'smooth' });
 }
+
 
 
         // Event Listener Cari
