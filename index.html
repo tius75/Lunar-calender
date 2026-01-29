@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Lunar & Ramalan BaZi Indonesia</title>
+    <title>Kalender Lunar & Ramalan Lengkap 2576</title>
     <style>
         :root {
             --merah-tua: #8b0000;
@@ -14,27 +14,10 @@
             --hijau-wa: #25D366;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f5f5f5; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .app-container { width: 100%; max-width: 480px; background: var(--putih); border: 3px solid var(--emas); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
 
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            background: var(--putih);
-            border: 3px solid var(--emas);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        /* Search & Header */
+        /* Header & Search */
         .search-bar { background: var(--krem); padding: 15px; display: flex; gap: 8px; border-bottom: 2px solid var(--emas); }
         .search-bar input { flex: 1; padding: 10px; border: 1px solid var(--emas); border-radius: 8px; }
         .btn-cari { background: var(--merah-tua); color: var(--emas); border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
@@ -50,38 +33,19 @@
         .sel-tanggal.hari-ini { background: var(--merah-terang); color: var(--emas); }
         .sel-tanggal.pilihan { border: 2px solid var(--merah-tua); background: #ffebeb; }
 
-        /* Detail Panel */
+        /* Panel Detail */
         #panelDetail { padding: 15px; background: var(--putih); border-top: 3px solid var(--emas); display: none; }
-        .kartu-info { background: var(--krem); padding: 15px; border-radius: 10px; border-left: 5px solid var(--merah-tua); position: relative; }
+        .kartu-info { background: var(--krem); padding: 15px; border-radius: 10px; border-left: 5px solid var(--merah-tua); }
         
-        /* Grid Detail */
         .grid-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
         .item-detail { background: white; padding: 8px; border-radius: 8px; border: 1px solid #eee; }
         .label-kecil { font-size: 0.7rem; color: #888; display: block; }
         .isi-detail { font-size: 0.85rem; font-weight: bold; color: #333; }
 
-        /* Section Ramalan */
-        .section-ramalan { margin-top: 15px; padding: 12px; background: #fff; border-radius: 8px; border: 1px dashed var(--emas); }
-        .ramalan-item { font-size: 0.85rem; margin-bottom: 8px; line-height: 1.4; color: #444; }
-        .ramalan-title { font-weight: bold; color: var(--merah-tua); display: block; margin-bottom: 2px; }
+        .section-box { margin-top: 12px; padding: 10px; background: #fff; border-radius: 8px; border: 1px dashed var(--emas); font-size: 0.85rem; }
+        .box-title { font-weight: bold; color: var(--merah-tua); border-bottom: 1px solid #eee; margin-bottom: 5px; display: block; }
 
-        /* WhatsApp Button */
-        .btn-wa {
-            width: 100%;
-            background-color: var(--hijau-wa);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .btn-wa:hover { background-color: #1ebe57; }
+        .btn-wa { width: 100%; background-color: var(--hijau-wa); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
     </style>
 </head>
 <body>
@@ -104,28 +68,35 @@
 
         <div id="panelDetail">
             <div class="kartu-info">
-                <h3 id="shioUtama" style="color: var(--merah-tua); margin: 0 0 5px 0;"></h3>
-                <div id="elemenHarian" style="font-weight: bold; font-size: 0.9rem; color: var(--merah-terang);"></div>
+                <h3 id="shioUtama" style="margin:0; color: var(--merah-tua);"></h3>
+                <div id="elemenBadge" style="font-weight: bold; color: var(--merah-terang); font-size: 0.9rem;"></div>
                 
                 <div id="tglMasehi" style="font-weight: bold; margin-top: 10px;"></div>
-                <div id="tglLunarNumerik" style="color: var(--merah-tua); font-weight: bold; font-size: 1.1rem; margin-bottom: 10px;"></div>
+                <div id="tglLunarNumerik" style="color: var(--merah-tua); font-weight: bold; font-size: 1.1rem;"></div>
 
                 <div class="grid-detail">
                     <div class="item-detail"><span class="label-kecil">Batang Langit</span><span class="isi-detail" id="btgLangit"></span></div>
                     <div class="item-detail"><span class="label-kecil">Cabang Bumi</span><span class="isi-detail" id="cbgBumi"></span></div>
-                    <div class="item-detail"><span class="label-kecil">Arah Hoki</span><span class="isi-detail">Utara & Tenggara</span></div>
-                    <div class="item-detail"><span class="label-kecil">Zodiak</span><span class="isi-detail" id="zodiak"></span></div>
+                    <div class="item-detail"><span class="label-kecil">Arah Rejeki</span><span class="isi-detail">Barat Daya</span></div>
+                    <div class="item-detail"><span class="label-kecil">Zodiak</span><span class="isi-detail" id="zodiakDisplay"></span></div>
                 </div>
 
-                <div class="section-ramalan">
-                    <div class="ramalan-item"><span class="ramalan-title">🏢 Karir & Bisnis</span><span id="ramalanKarir"></span></div>
-                    <div class="ramalan-item"><span class="ramalan-title">❤️ Asmara</span><span id="ramalanAsmara"></span></div>
-                    <div class="ramalan-item"><span class="ramalan-title">🍎 Kesehatan</span><span id="ramalanSehat"></span></div>
+                <div class="section-box">
+                    <span class="box-title">🌟 Ramalan Zodiak</span>
+                    <div id="teksZodiak"></div>
                 </div>
 
-                <button class="btn-wa" id="btnWhatsApp">
-                    📱 Bagikan ke WhatsApp
-                </button>
+                <div class="section-box" style="background: #fff9e6;">
+                    <span class="box-title">💞 Pasangan Shio Serasi (Jodoh)</span>
+                    <div id="teksJodoh"></div>
+                </div>
+
+                <div class="section-box">
+                    <span class="box-title">📅 Sembahyang & Peruntungan</span>
+                    <div id="teksRamalan"></div>
+                </div>
+
+                <button class="btn-wa" id="btnWhatsApp">📱 Bagikan ke WhatsApp</button>
             </div>
         </div>
     </div>
@@ -140,6 +111,7 @@
         const kamusBatang = { "甲": "Kayu Yang", "乙": "Kayu Yin", "丙": "Api Yang", "丁": "Api Yin", "戊": "Tanah Yang", "己": "Tanah Yin", "庚": "Logam Yang", "辛": "Logam Yin", "壬": "Air Yang", "癸": "Air Yin" };
         const kamusCabang = { "子": "Tikus (Air)", "丑": "Kerbau (Tanah)", "寅": "Macan (Kayu)", "卯": "Kelinci (Kayu)", "辰": "Naga (Tanah)", "巳": "Ular (Api)", "午": "Kuda (Api)", "未": "Kambing (Tanah)", "申": "Monyet (Logam)", "酉": "Ayam (Logam)", "戌": "Anjing (Tanah)", "亥": "Babi (Air)" };
         const kamusZodiak = { "水瓶": "Aquarius", "双鱼": "Pisces", "白羊": "Aries", "金牛": "Taurus", "双子": "Gemini", "巨蟹": "Cancer", "狮子": "Leo", "处女": "Virgo", "天秤": "Libra", "天蝎": "Scorpio", "射手": "Sagitarius", "摩羯": "Capricorn" };
+        const jodohShio = { "Tikus": "Naga, Monyet", "Kerbau": "Tikus, Ayam", "Macan": "Kuda, Anjing", "Kelinci": "Kambing, Babi", "Naga": "Tikus, Monyet", "Ular": "Kerbau, Ayam", "Kuda": "Macan, Anjing", "Kambing": "Kelinci, Babi", "Monyet": "Tikus, Naga", "Ayam": "Kerbau, Ular", "Anjing": "Macan, Kuda", "Babi": "Kelinci, Kambing" };
 
         function renderCalendar(tgl, targetDay = null) {
             const grid = document.getElementById('grid');
@@ -172,34 +144,43 @@
         function showDetail(solar, lunar) {
             document.getElementById('panelDetail').style.display = 'block';
             
-            const shio = kamusShio[lunar.getYearShengXiao()] || lunar.getYearShengXiao();
-            const tahunKongzili = lunar.getYear() + 551;
-            const tglLunarText = `${lunar.getDay()} - ${lunar.getMonth()} - ${tahunKongzili}`;
+            const shio = kamusShio[lunar.getYearShengXiao()];
+            const tahunK = lunar.getYear() + 551;
+            const zodiak = kamusZodiak[solar.getXingZuo()];
+            const tglL = `${lunar.getDay()} - ${lunar.getMonth()} - ${tahunK}`;
 
             document.getElementById('shioUtama').innerText = `Shio ${shio}`;
-            document.getElementById('elemenHarian').innerText = `Elemen: ${lunar.getYearNaYin()}`;
+            document.getElementById('elemenBadge').innerText = `Elemen: ${lunar.getYearNaYin()}`;
             document.getElementById('tglMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
-            document.getElementById('tglLunarNumerik').innerText = `Lunar: ${tglLunarText}`;
-            
+            document.getElementById('tglLunarNumerik').innerText = `Lunar: ${tglL}`;
             document.getElementById('btgLangit').innerText = kamusBatang[lunar.getYearGan()];
             document.getElementById('cbgBumi').innerText = kamusCabang[lunar.getYearZhi()];
-            document.getElementById('zodiak').innerText = kamusZodiak[solar.getXingZuo()];
+            document.getElementById('zodiakDisplay').innerText = zodiak;
 
-            // Ramalan BaZi Sederhana
-            document.getElementById('ramalanKarir').innerText = "Hari yang stabil untuk memulai kerja sama baru. Keuangan terpantau aman.";
-            document.getElementById('ramalanAsmara').innerText = "Waktu yang tepat untuk berkomunikasi secara jujur dengan pasangan.";
-            document.getElementById('ramalanSehat').innerText = "Perbanyak minum air putih dan hindari makanan pedas berlebih.";
+            // Isi Konten Ramalan
+            const teksZod = `Hari ini ${zodiak} perlu fokus pada keuangan. Jangan terlalu boros untuk hal yang tidak perlu.`;
+            const teksJod = `Pasangan paling cocok untuk Shio ${shio} adalah ${jodohShio[shio]}.`;
+            let sembahyang = lunar.getDay() === 1 ? "Sembahyang Ce It (Awal Bulan)" : (lunar.getDay() === 15 ? "Sembahyang Cap Go (Purnama)" : "Jadwal rutin harian.");
 
-            // Fitur WhatsApp Share
+            document.getElementById('teksZodiak').innerText = teksZod;
+            document.getElementById('teksJodoh').innerText = teksJod;
+            document.getElementById('teksRamalan').innerText = sembahyang;
+
+            // SHARE WHATSAPP (Rapi & Berjarak)
             document.getElementById('btnWhatsApp').onclick = () => {
-                const pesan = `*INFO LUNAR & RAMALAN HARI INI*%0A%0A` +
-                              `📅 *Masehi:* ${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}%0A` +
-                              `🌙 *Lunar:* ${tglLunarText}%0A` +
-                              `🐅 *Shio:* ${shio} (${lunar.getYearNaYin()})%0A%0A` +
-                              `🏢 *Karir:* Karir stabil, keuangan aman.%0A` +
-                              `❤️ *Asmara:* Komunikasi jujur adalah kunci.%0A` +
-                              `🍎 *Sehat:* Jaga hidrasi tubuh.%0A%0A` +
-                              `_Cek peruntunganmu di: tius75.github.io/Lunar-calender/_`;
+                const urlAplikasi = "tius75.github.io/Lunar-calender/";
+                const pesan = 
+                    `🏮 *DATA KALENDER LUNAR & RAMALAN* 🏮%0A%0A` +
+                    `📅 *MASEHI:* ${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}%0A` +
+                    `🌙 *LUNAR:* ${tglL}%0A` +
+                    `🐅 *SHIO:* ${shio} (${lunar.getYearNaYin()})%0A` +
+                    `🌌 *ZODIAK:* ${zodiak}%0A%0A` +
+                    `---%0A%0A` +
+                    `✨ *RAMALAN ZODIAK:*%0A${teksZod}%0A%0A` +
+                    `💕 *CEK JODOH SHIO:*%0A${teksJod}%0A%0A` +
+                    `🕯️ *JADWAL SEMBAHYANG:*%0A${sembahyang}%0A%0A` +
+                    `---%0A%0A` +
+                    `📱 _Cek peruntunganmu setiap hari di:_%0A${urlAplikasi}`;
                 
                 window.open(`https://api.whatsapp.com/send?text=${pesan}`, '_blank');
             };
@@ -207,7 +188,6 @@
             document.getElementById('panelDetail').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Cari Tanggal
         document.getElementById('btnCari').onclick = () => {
             const val = document.getElementById('inputCari').value;
             if(!val) return;
