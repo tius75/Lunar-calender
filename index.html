@@ -3,47 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Lunar Indonesia & Ramalan</title>
+    <title>Kalender Lunar Komplit - Fitur Cari</title>
     <style>
         :root {
             --merah-tua: #8b0000;
             --merah-terang: #d32f2f;
             --emas: #d4af37;
-            --krem-emas: #fcf4dd;
+            --krem: #fcf4dd;
             --putih: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #fdf2f2;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
             margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
         }
 
         .app-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             background: var(--putih);
             border: 3px solid var(--emas);
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             overflow: hidden;
         }
 
-        /* Bagian Atas / Header */
+        /* Search Section */
+        .search-section {
+            background: var(--krem);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--emas);
+        }
+
+        .search-section input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--emas);
+            border-radius: 5px;
+        }
+
+        .btn-cari {
+            background: var(--merah-tua);
+            color: var(--emas);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Header */
         .calendar-header {
             background: var(--merah-tua);
             color: var(--emas);
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
 
         .header-nav {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-top: 10px;
         }
 
@@ -51,98 +77,81 @@
             background: var(--emas);
             color: var(--merah-tua);
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 5px 12px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
         }
 
-        .btn-nav:hover { background: #e5c05b; }
-
-        /* Grid Kalender */
+        /* Grid */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            background: var(--krem-emas);
+            background: var(--krem);
         }
 
         .label-hari {
             background: var(--merah-terang);
             color: var(--putih);
-            padding: 12px 0;
+            padding: 10px 0;
             text-align: center;
             font-size: 0.75rem;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         .sel-tanggal {
             aspect-ratio: 1/1.2;
-            border: 0.5px solid rgba(212, 175, 55, 0.2);
+            border: 0.1px solid rgba(212, 175, 55, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            background: var(--putih);
-            transition: 0.2s;
+            background: white;
         }
 
-        .sel-tanggal:hover {
-            background: #fff0f0;
-            z-index: 2;
-            box-shadow: inset 0 0 5px var(--emas);
-        }
+        .sel-tanggal:hover { background: #fff5f5; border: 1px solid var(--emas); }
+        .sel-tanggal.pilihan { border: 2px solid var(--merah-tua); background: #ffebeb; }
+        .sel-tanggal.hari-ini { background: var(--merah-terang); color: var(--emas); }
 
-        .sel-tanggal.hari-ini {
-            background: var(--merah-terang) !important;
-            color: var(--emas) !important;
-        }
+        .tgl-masehi { font-size: 1rem; font-weight: bold; }
+        .tgl-lunar { font-size: 0.6rem; color: var(--merah-tua); text-align: center; }
 
-        .tgl-masehi {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        .tgl-lunar {
-            font-size: 0.65rem;
-            color: var(--merah-tua);
-            margin-top: 2px;
-            text-align: center;
-        }
-
-        /* Panel Ramalan */
-        #panelRamalan {
+        /* Detail Ramalan */
+        #panelDetail {
             padding: 20px;
+            background: var(--putih);
             border-top: 3px solid var(--emas);
-            background: #fffcf5;
             display: none;
         }
 
-        .kartu-ramalan {
-            border-left: 4px solid var(--merah-tua);
-            padding-left: 15px;
+        .kartu-info {
+            background: var(--krem);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--merah-tua);
         }
 
-        .badge-shio {
-            background: var(--merah-tua);
-            color: var(--emas);
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: inline-block;
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.85rem;
         }
 
-        .judul-info { font-weight: bold; color: #333; margin: 5px 0; }
-        .teks-ramalan { font-size: 0.9rem; line-height: 1.5; color: #444; }
+        .info-item { background: white; padding: 5px 10px; border-radius: 5px; border: 1px solid #eee; }
+        .label-kecil { font-size: 0.7rem; color: #888; display: block; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
+        <div class="search-section">
+            <input type="date" id="inputCari">
+            <button class="btn-cari" id="btnCari">CARI</button>
+        </div>
+
         <div class="calendar-header">
             <h2 id="judulBulan">Januari 2026</h2>
             <div class="header-nav">
@@ -151,15 +160,26 @@
             </div>
         </div>
 
-        <div class="calendar-grid" id="gridKalender">
-            </div>
+        <div class="calendar-grid" id="grid"></div>
 
-        <div id="panelRamalan">
-            <div class="kartu-ramalan">
-                <div id="displayShio" class="badge-shio">Shio</div>
-                <div id="displayTglMasehi" class="judul-info"></div>
-                <div id="displayTglLunar" style="font-size: 0.85rem; color: #b30000; margin-bottom: 8px;"></div>
-                <p id="isiRamalan" class="teks-ramalan"></p>
+        <div id="panelDetail">
+            <div class="kartu-info">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div id="shioUtama" style="font-size: 1.5rem; font-weight: bold; color: var(--merah-tua);"></div>
+                    <div id="elemenBadge" style="background: var(--merah-tua); color: var(--emas); padding: 3px 10px; border-radius: 5px; font-size: 0.8rem;"></div>
+                </div>
+                
+                <div id="tglLengkapMasehi" style="font-weight: bold; margin-top: 10px;"></div>
+                <div id="tglLengkapLunar" style="color: var(--merah-terang); font-size: 0.9rem;"></div>
+                
+                <div class="grid-info">
+                    <div class="info-item"><span class="label-kecil">Batang Langit</span><span id="btgLangit">-</span></div>
+                    <div class="info-item"><span class="label-kecil">Cabang Bumi</span><span id="cbgBumi">-</span></div>
+                    <div class="info-item"><span class="label-kecil">Zodiak</span><span id="zodiakBarat">-</span></div>
+                    <div class="info-item"><span class="label-kecil">Musim (Solar Terms)</span><span id="solarTerm">-</span></div>
+                </div>
+
+                <p id="teksRamalan" style="margin-top: 15px; font-size: 0.9rem; line-height: 1.5; border-top: 1px dashed var(--emas); padding-top: 10px;"></p>
             </div>
         </div>
     </div>
@@ -167,112 +187,89 @@
     <script type="module">
         import { Solar, Lunar } from 'https://esm.run/lunar-javascript';
 
-        let tanggalAktif = new Date();
-
+        let viewDate = new Date();
         const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        const daftarHari = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
         const databaseRamalan = {
-            "Tikus": "Hari yang baik untuk memulai rencana baru. Keberuntungan ada di pihak Anda.",
-            "Kerbau": "Fokus pada pekerjaan rutin. Kesabaran akan membawa hasil yang stabil.",
-            "Macan": "Waspadai pengeluaran mendadak. Beranilah mengambil keputusan kecil.",
-            "Kelinci": "Harmoni keluarga adalah prioritas hari ini. Hindari debat kusir.",
-            "Naga": "Energi Anda sedang prima. Peluang karir terlihat sangat cerah.",
-            "Ular": "Gunakan intuisi Anda dalam menilai orang baru. Tetap waspada.",
-            "Kuda": "Banyak interaksi sosial yang menguntungkan. Jangan menutup diri.",
-            "Kambing": "Waktunya untuk istirahat dan memulihkan energi kreatif Anda.",
-            "Monyet": "Solusi cerdas akan muncul untuk masalah yang sedang Anda hadapi.",
-            "Ayam": "Kedisiplinan Anda hari ini akan dipuji oleh rekan kerja.",
-            "Anjing": "Kesetiaan Anda membawa kebahagiaan bagi orang di sekitar Anda.",
-            "Babi": "Kenyamanan rumah adalah tempat terbaik untuk hari ini. Nikmati kuliner."
+            "Tikus": "Hari ini membawa energi kemakmuran. Bagus untuk negosiasi bisnis.",
+            "Kerbau": "Fokus pada kestabilan. Jangan terburu-buru mengambil resiko besar.",
+            "Macan": "Waktu yang tepat untuk menunjukkan kepemimpinan Anda.",
+            "Kelinci": "Hari yang tenang. Gunakan untuk mempererat hubungan keluarga.",
+            "Naga": "Keberuntungan bersinar pada Anda. Ambillah kesempatan yang muncul.",
+            "Ular": "Pikirkan matang-matang sebelum bicara. Kebijaksanaan diperlukan.",
+            "Kuda": "Kebebasan dan petualangan menanti. Hari yang dinamis.",
+            "Kambing": "Sisi artistik Anda sedang kuat. Cocok untuk kegiatan seni.",
+            "Monyet": "Kecerdasan Anda akan menemukan jalan keluar dari masalah rumit.",
+            "Ayam": "Ketelitian Anda akan mencegah kesalahan besar hari ini.",
+            "Anjing": "Kesetiaan Anda akan dihargai oleh seseorang yang penting.",
+            "Babi": "Kebahagiaan datang dari hal-hal sederhana hari ini."
         };
 
-        function buatKalender(tgl) {
-            const grid = document.getElementById('gridKalender');
+        function render(tgl, highlightDay = null) {
+            const grid = document.getElementById('grid');
             grid.innerHTML = '';
             
-            const thn = tgl.getFullYear();
-            const bln = tgl.getMonth();
+            const y = tgl.getFullYear();
+            const m = tgl.getMonth();
+            document.getElementById('judulBulan').innerText = `${daftarBulan[m]} ${y}`;
 
-            document.getElementById('judulBulan').innerText = `${daftarBulan[bln]} ${thn}`;
-
-            // Tambah Label Hari
-            daftarHari.forEach(h => {
-                const div = document.createElement('div');
-                div.className = 'label-hari';
-                div.innerText = h;
-                grid.appendChild(div);
+            ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].forEach(h => {
+                grid.innerHTML += `<div class="label-hari">${h}</div>`;
             });
 
-            const tglPertama = new Date(thn, bln, 1).getDay();
-            const jmlHari = new Date(thn, bln + 1, 0).getDate();
+            const startDay = new Date(y, m, 1).getDay();
+            const totalDays = new Date(y, m + 1, 0).getDate();
 
-            // Kotak kosong awal
-            for (let i = 0; i < tglPertama; i++) {
-                grid.appendChild(document.createElement('div'));
-            }
+            for (let i = 0; i < startDay; i++) grid.innerHTML += `<div></div>`;
 
-            // Render Tanggal
-            for (let d = 1; d <= jmlHari; d++) {
-                const solar = Solar.fromYmd(thn, bln + 1, d);
-                const lunar = solar.getLunar();
-                
+            for (let d = 1; d <= totalDays; d++) {
+                const s = Solar.fromYmd(y, m + 1, d);
+                const l = s.getLunar();
+                const isToday = new Date().toDateString() === new Date(y, m, d).toDateString();
+                const isSelected = highlightDay === d;
+
                 const sel = document.createElement('div');
-                sel.className = 'sel-tanggal';
-                
-                // Tandai Hari Ini
-                if (new Date().toDateString() === new Date(thn, bln, d).toDateString()) {
-                    sel.classList.add('hari-ini');
-                }
-
-                // Teks Lunar (Angka atau Nama Hari Besar)
-                let teksLunar = lunar.getDayInChinese();
-                if (teksLunar === '初一') {
-                    teksLunar = lunar.getMonthInChinese() + ' Gwee'; // Awal bulan
-                }
-
-                sel.innerHTML = `
-                    <span class="tgl-masehi">${d}</span>
-                    <span class="tgl-lunar">${teksLunar}</span>
-                `;
-
-                sel.onclick = () => tampilkanRamalan(solar, lunar);
+                sel.className = `sel-tanggal ${isToday ? 'hari-ini' : ''} ${isSelected ? 'pilihan' : ''}`;
+                sel.innerHTML = `<span class="tgl-masehi">${d}</span><span class="tgl-lunar">${l.getDayInChinese()}</span>`;
+                sel.onclick = () => showDetail(s, l);
                 grid.appendChild(sel);
+
+                if(isSelected) showDetail(s, l);
             }
         }
 
-        function tampilkanRamalan(solar, lunar) {
-            const panel = document.getElementById('panelRamalan');
-            panel.style.display = 'block';
-
+        function showDetail(solar, lunar) {
+            document.getElementById('panelDetail').style.display = 'block';
+            
             const shio = lunar.getYearShengXiao();
-            const tglMasehi = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
-            const tglLunar = `Imlek: ${lunar.getDayInChinese()} - Bulan ${lunar.getMonthInChinese()} - Tahun ${lunar.getYearInGanZhi()}`;
-
-            document.getElementById('displayTglMasehi').innerText = tglMasehi;
-            document.getElementById('displayTglLunar').innerText = tglLunar;
-            document.getElementById('displayShio').innerText = `Shio ${shio} (${lunar.getYearNaYin()})`;
-            document.getElementById('isiRamalan').innerText = databaseRamalan[shio] || "Semoga hari ini penuh berkah.";
-
-            panel.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('shioUtama').innerText = `Shio ${shio}`;
+            document.getElementById('elemenBadge').innerText = lunar.getYearNaYin();
+            document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
+            document.getElementById('tglLengkapLunar').innerText = `Tahun ${lunar.getYearInGanZhi()} - Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
+            
+            document.getElementById('btgLangit').innerText = lunar.getYearGan();
+            document.getElementById('cbgBumi').innerText = lunar.getYearZhi();
+            document.getElementById('zodiakBarat').innerText = solar.getXingZuo();
+            document.getElementById('solarTerm').innerText = lunar.getJieQi() || "Tidak ada fenomena";
+            
+            document.getElementById('teksRamalan').innerText = databaseRamalan[shio];
+            document.getElementById('panelDetail').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Navigasi Tombol
-        document.getElementById('btnPrev').onclick = () => {
-            tanggalAktif.setMonth(tanggalAktif.getMonth() - 1);
-            buatKalender(tanggalAktif);
-            document.getElementById('panelRamalan').style.display = 'none';
+        // Event Listener Cari
+        document.getElementById('btnCari').onclick = () => {
+            const val = document.getElementById('inputCari').value;
+            if(!val) return;
+            const d = new Date(val);
+            viewDate = d;
+            render(viewDate, d.getDate());
         };
 
-        document.getElementById('btnNext').onclick = () => {
-            tanggalAktif.setMonth(tanggalAktif.getMonth() + 1);
-            buatKalender(tanggalAktif);
-            document.getElementById('panelRamalan').style.display = 'none';
-        };
+        // Navigasi
+        document.getElementById('btnPrev').onclick = () => { viewDate.setMonth(viewDate.getMonth() - 1); render(viewDate); };
+        document.getElementById('btnNext').onclick = () => { viewDate.setMonth(viewDate.getMonth() + 1); render(viewDate); };
 
-        // Jalankan Pertama Kali
-        buatKalender(tanggalAktif);
-
+        render(viewDate);
     </script>
 </body>
 </html>
