@@ -104,11 +104,27 @@
     <script type="module">
         import { Solar, Lunar } from 'https://esm.run/lunar-javascript';
 
-        // --- KAMUS TRANSLASI LENGKAP ---
+        // --- KAMUS TRANSLASI LENGKAP (AKSARA TELAH DIHAPUS) ---
         const kamusShio = { "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci", "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing", "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi" };
-        const kamusBatang = { "甲": "Kayu Yang", "乙": "Kayu Yin", "丙": "Api Yang", "丁": "Api Yin", "戊": "Tanah Yang", "己": "Tanah Yin", "庚": "Logam Yang", "辛": "Logam Yin", "壬": "Air Yang", "癸": "Air Yin" };
-        const kamusCabang = { "子": "Tikus (Air)", "丑": "Kerbau (Tanah)", "寅": "Macan (Kayu)", "卯": "Kelinci (Kayu)", "辰": "Naga (Tanah)", "巳": "Ular (Api)", "午": "Kuda (Api)", "未": "Kambing (Tanah)", "申": "Monyet (Logam)", "酉": "Ayam (Logam)", "戌": "Anjing (Tanah)", "亥": "Babi (Air)" };
-        const kamusZodiak = { "水瓶": "Aquarius", "双鱼": "Pisces", "白羊": "Aries", "金牛": "Taurus", "双子": "Gemini", "巨蟹": "Cancer", "狮子": "Leo", "处女": "Virgo", "天秤": "Libra", "天蝎": "Scorpio", "射手": "Sagitarius", "摩羯": "Capricorn" };
+        
+        const kamusBatang = { 
+            "jia": "Kayu Yang", "yi": "Kayu Yin", "bing": "Api Yang", "ding": "Api Yin", 
+            "wu": "Tanah Yang", "ji": "Tanah Yin", "geng": "Logam Yang", "xin": "Logam Yin", 
+            "ren": "Air Yang", "gui": "Air Yin" 
+        };
+
+        const kamusCabang = { 
+            "zi": "Tikus (Air)", "chou": "Kerbau (Tanah)", "yin": "Macan (Kayu)", "mao": "Kelinci (Kayu)", 
+            "chen": "Naga (Tanah)", "si": "Ular (Api)", "wu": "Kuda (Api)", "wei": "Kambing (Tanah)", 
+            "shen": "Monyet (Logam)", "you": "Ayam (Logam)", "xu": "Anjing (Tanah)", "hai": "Babi (Air)" 
+        };
+
+        const kamusZodiak = { 
+            "shui-ping": "Aquarius", "shuang-yu": "Pisces", "bai-yang": "Aries", "jin-niu": "Taurus", 
+            "shuang-zi": "Gemini", "ju-xie": "Cancer", "shi-zi": "Leo", "chu-nu": "Virgo", 
+            "tian-cheng": "Libra", "tian-xie": "Scorpio", "she-shou": "Sagitarius", "mo-jie": "Capricorn" 
+        };
+
         const jodohShio = { "Tikus": "Naga, Monyet", "Kerbau": "Tikus, Ayam", "Macan": "Kuda, Anjing", "Kelinci": "Kambing, Babi", "Naga": "Tikus, Monyet", "Ular": "Kerbau, Ayam", "Kuda": "Macan, Anjing", "Kambing": "Kelinci, Babi", "Monyet": "Tikus, Naga", "Ayam": "Kerbau, Ular", "Anjing": "Macan, Kuda", "Babi": "Kelinci, Kambing" };
         const tglIndo = ["", "Ce It", "Ji It", "Sa It", "Si It", "Go It", "Lak It", "Tjit It", "Puek It", "Kauw It", "Tjap It", "Tjap Tji", "Tjap Sa", "Tjap Si", "Tjap Go", "Tjap Lak", "Tjit It", "Puek It", "Kauw It", "Ji Tjap", "Ji It", "Ji Tji", "Ji Sa", "Ji Si", "Ji Go", "Ji Lak", "Ji Tjit", "Ji Puek", "Ji Kauw", "Sa Tjap"];
         const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -145,12 +161,16 @@
         function showDetail(solar, lunar) {
             document.getElementById('panelDetail').style.display = 'block';
             
-            // --- PROSES TRANSLASI PAKSA ---
+            // Mengambil nilai Pinyin/ID dari library sebagai kunci kamus
             const shioEn = lunar.getYearShengXiao();
             const shioIndo = kamusShio[shioEn] || shioEn;
-            const btgIndo = kamusBatang[lunar.getYearGan()] || lunar.getYearGan();
-            const cbgIndo = kamusCabang[lunar.getYearZhi()] || lunar.getYearZhi();
-            const zodIndo = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
+            
+            // Menggunakan getYearGanPinyin untuk menghindari aksara Hanzi
+            const btgKey = lunar.getYearGan(); 
+            const btgIndo = kamusBatang[lunar.getYearGanPinyin()] || lunar.getYearGan();
+            
+            const cbgIndo = kamusCabang[lunar.getYearZhiPinyin()] || lunar.getYearZhi();
+            const zodIndo = kamusZodiak[solar.getXingZuoPinyin()] || solar.getXingZuo();
             const elemen = lunar.getYearNaYin();
             
             const tahunK = lunar.getYear() + 551;
@@ -178,7 +198,7 @@
             document.getElementById('teksJodoh').innerText = teksJod;
             document.getElementById('teksRamalan').innerText = sembahyang;
 
-            // Share WhatsApp (Format Rapi dengan Spasi)
+            // Share WhatsApp
             document.getElementById('btnWhatsApp').onclick = () => {
                 const pesan = 
                     `🏮 *DATA RAMALAN LUNAR HARIAN* 🏮%0A%0A` +
