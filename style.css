@@ -1,0 +1,69 @@
+:root {
+    --primary-red: #b30000;
+    --gold: #d4af37;
+    --light-bg: #fff5f5;
+}
+
+.calendar-container {
+    max-width: 500px;
+    background: white;
+    border: 3px solid var(--gold);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.calendar-header {
+    background: var(--primary-red);
+    color: var(--gold);
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: var(--light-bg);
+}
+
+.day-name {
+    background: #800000;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.day-cell {
+    aspect-ratio: 1 / 1;
+    border: 0.5px solid #ffcccc;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.day-cell:hover {
+    background: #ffe0e0;
+}
+
+.day-cell .solar-date {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.day-cell .lunar-date {
+    font-size: 0.7rem;
+    color: var(--primary-red);
+}
+
+.day-cell.today {
+    background: var(--gold);
+    color: white;
+}
