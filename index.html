@@ -27,7 +27,7 @@
 
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--krem); }
         .label-hari { background: var(--merah-terang); color: var(--putih); padding: 10px 0; text-align: center; font-size: 0.8rem; font-weight: bold; }
-        .sel-tanggal { aspect-ratio: 1/1.3; border: 0.1px solid rgba(212, 175, 55, 0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: white; }
+        .sel-tanggal { aspect-ratio: 1/1.3; border: 0.1px solid rgba(212, 175, 55, 0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: white; position: relative; }
         .sel-tanggal.hari-ini { background: var(--merah-terang); color: var(--emas); }
         .sel-tanggal.pilihan { border: 2px solid var(--merah-tua); background: #ffebeb; }
 
@@ -45,7 +45,7 @@
         .section-box { margin-top: 12px; padding: 10px; background: #fff; border-radius: 8px; border: 1px dashed var(--emas); font-size: 0.85rem; }
         .box-title { font-weight: bold; color: var(--merah-tua); border-bottom: 1px solid #eee; margin-bottom: 5px; display: block; }
 
-        .btn-wa { width: 100%; background-color: var(--hijau-wa); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-wa { width: 100%; background-color: var(--hijau-wa); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -102,16 +102,16 @@
     </div>
 
     <script type="module">
-        import { Solar, Lunar, I18n } from 'https://esm.run/lunar-javascript';
+        import { Solar, Lunar } from 'https://esm.run/lunar-javascript';
 
-        // Set library ke Bahasa Indonesia (Jika didukung library) atau manual
-        const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        
+        // --- KAMUS TRANSLASI LENGKAP ---
         const kamusShio = { "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci", "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing", "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi" };
+        const kamusBatang = { "甲": "Kayu Yang", "乙": "Kayu Yin", "丙": "Api Yang", "丁": "Api Yin", "戊": "Tanah Yang", "己": "Tanah Yin", "庚": "Logam Yang", "辛": "Logam Yin", "壬": "Air Yang", "癸": "Air Yin" };
+        const kamusCabang = { "子": "Tikus (Air)", "丑": "Kerbau (Tanah)", "寅": "Macan (Kayu)", "卯": "Kelinci (Kayu)", "辰": "Naga (Tanah)", "巳": "Ular (Api)", "午": "Kuda (Api)", "未": "Kambing (Tanah)", "申": "Monyet (Logam)", "酉": "Ayam (Logam)", "戌": "Anjing (Tanah)", "亥": "Babi (Air)" };
         const kamusZodiak = { "水瓶": "Aquarius", "双鱼": "Pisces", "白羊": "Aries", "金牛": "Taurus", "双子": "Gemini", "巨蟹": "Cancer", "狮子": "Leo", "处女": "Virgo", "天秤": "Libra", "天蝎": "Scorpio", "射手": "Sagitarius", "摩羯": "Capricorn" };
         const jodohShio = { "Tikus": "Naga, Monyet", "Kerbau": "Tikus, Ayam", "Macan": "Kuda, Anjing", "Kelinci": "Kambing, Babi", "Naga": "Tikus, Monyet", "Ular": "Kerbau, Ayam", "Kuda": "Macan, Anjing", "Kambing": "Kelinci, Babi", "Monyet": "Tikus, Naga", "Ayam": "Kerbau, Ular", "Anjing": "Macan, Kuda", "Babi": "Kelinci, Kambing" };
-
-        const tglIndo = ["", "Ce It", "Ji It", "Sa It", "Si It", "Go It", "Lak It", "Tjit It", "Puek It", "Kauw It", "Tjap It", "Tjap Tji", "Tjap Sa", "Tjap Si", "Tjap Go", "Tjap Lak", "Tjap Tjit", "Tjap Puek", "Tjap Kauw", "Ji Tjap", "Ji It", "Ji Tji", "Ji Sa", "Ji Si", "Ji Go", "Ji Lak", "Ji Tjit", "Ji Puek", "Ji Kauw", "Sa Tjap"];
+        const tglIndo = ["", "Ce It", "Ji It", "Sa It", "Si It", "Go It", "Lak It", "Tjit It", "Puek It", "Kauw It", "Tjap It", "Tjap Tji", "Tjap Sa", "Tjap Si", "Tjap Go", "Tjap Lak", "Tjit It", "Puek It", "Kauw It", "Ji Tjap", "Ji It", "Ji Tji", "Ji Sa", "Ji Si", "Ji Go", "Ji Lak", "Ji Tjit", "Ji Puek", "Ji Kauw", "Sa Tjap"];
+        const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         let viewDate = new Date();
 
@@ -125,7 +125,6 @@
 
             const firstDay = new Date(y, m, 1).getDay();
             const daysInMonth = new Date(y, m + 1, 0).getDate();
-
             for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
 
             for (let d = 1; d <= daysInMonth; d++) {
@@ -134,12 +133,9 @@
                 const isToday = new Date().toDateString() === new Date(y, m, d).toDateString();
                 const isTarget = targetDay === d;
 
-                // Ambil Nama Tanggal Indonesia
-                const namaTglIndo = tglIndo[l.getDay()];
-
                 const sel = document.createElement('div');
                 sel.className = `sel-tanggal ${isToday ? 'hari-ini' : ''} ${isTarget ? 'pilihan' : ''}`;
-                sel.innerHTML = `<span class="tgl-masehi">${d}</span><span class="tgl-lunar-indo">${namaTglIndo}</span>`;
+                sel.innerHTML = `<span class="tgl-masehi">${d}</span><span class="tgl-lunar-indo">${tglIndo[l.getDay()]}</span>`;
                 sel.onclick = () => showDetail(s, l);
                 grid.appendChild(sel);
                 if (isTarget || (targetDay === null && isToday)) showDetail(s, l);
@@ -149,27 +145,29 @@
         function showDetail(solar, lunar) {
             document.getElementById('panelDetail').style.display = 'block';
             
-            // Konversi Shio ke Indonesia
+            // --- PROSES TRANSLASI PAKSA ---
             const shioEn = lunar.getYearShengXiao();
             const shioIndo = kamusShio[shioEn] || shioEn;
+            const btgIndo = kamusBatang[lunar.getYearGan()] || lunar.getYearGan();
+            const cbgIndo = kamusCabang[lunar.getYearZhi()] || lunar.getYearZhi();
+            const zodIndo = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
+            const elemen = lunar.getYearNaYin();
             
             const tahunK = lunar.getYear() + 551;
             const tglL = `${lunar.getDay()} - ${lunar.getMonth()} - ${tahunK}`;
-            const zodiak = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
-            const elemen = lunar.getYearNaYin();
-            
-            // Tampilan UI
+
+            // Update Tampilan UI
             document.getElementById('shioUtama').innerText = `Shio ${shioIndo}`;
             document.getElementById('elemenBadge').innerText = `Elemen: ${elemen}`;
             document.getElementById('tglMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
             document.getElementById('tglLunarNumerik').innerText = `Lunar: ${tglL}`;
-            document.getElementById('btgLangit').innerText = lunar.getYearGan() + " (Batang)";
-            document.getElementById('cbgBumi').innerText = lunar.getYearZhi() + " (Cabang)";
-            document.getElementById('zodiakDisplay').innerText = zodiak;
+            document.getElementById('btgLangit').innerText = btgIndo;
+            document.getElementById('cbgBumi').innerText = cbgIndo;
+            document.getElementById('zodiakDisplay').innerText = zodIndo;
 
-            // Logika Ramalan & Jodoh
-            const teksZod = `Hari ini ${zodiak} sebaiknya menjaga keseimbangan antara pekerjaan dan waktu istirahat.`;
-            const jodohnya = jodohShio[shioIndo] || "N/A";
+            // Konten Ramalan
+            const teksZod = `Hari ini ${zodIndo} disarankan untuk lebih fokus pada kesehatan dan keseimbangan emosi.`;
+            const jodohnya = jodohShio[shioIndo] || "Informasi belum tersedia";
             const teksJod = `Pasangan paling cocok untuk Shio ${shioIndo} adalah ${jodohnya}.`;
             
             let sembahyang = "Jadwal rutin harian.";
@@ -180,20 +178,21 @@
             document.getElementById('teksJodoh').innerText = teksJod;
             document.getElementById('teksRamalan').innerText = sembahyang;
 
-            // SHARE WHATSAPP (Rapi & Lengkap)
+            // Share WhatsApp (Format Rapi dengan Spasi)
             document.getElementById('btnWhatsApp').onclick = () => {
                 const pesan = 
-                    `🏮 *DATA RAMALAN LUNAR INDONESIA* 🏮%0A%0A` +
+                    `🏮 *DATA RAMALAN LUNAR HARIAN* 🏮%0A%0A` +
                     `📅 *MASEHI:* ${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}%0A` +
                     `🌙 *LUNAR:* ${tglL}%0A%0A` +
                     `🐅 *SHIO:* ${shioIndo} (${elemen})%0A` +
-                    `🌌 *ZODIAK:* ${zodiak}%0A%0A` +
+                    `🌌 *ZODIAK:* ${zodIndo}%0A` +
+                    `🎋 *BATANG/CABANG:* ${btgIndo} / ${cbgIndo}%0A%0A` +
                     `---%0A%0A` +
                     `✨ *RAMALAN ZODIAK:*%0A${teksZod}%0A%0A` +
                     `💕 *CEK JODOH SHIO:*%0A${teksJod}%0A%0A` +
                     `🕯️ *INFO SEMBAHYANG:*%0A${sembahyang}%0A%0A` +
                     `---%0A%0A` +
-                    `📱 _Cek harian di: tius75.github.io/Lunar-calender/_`;
+                    `📱 _Cek peruntunganmu di: tius75.github.io/Lunar-calender/_`;
                 
                 window.open(`https://api.whatsapp.com/send?text=${pesan}`, '_blank');
             };
@@ -207,7 +206,6 @@
             viewDate = new Date(val);
             renderCalendar(viewDate, viewDate.getDate());
         };
-
         document.getElementById('btnPrev').onclick = () => { viewDate.setMonth(viewDate.getMonth() - 1); renderCalendar(viewDate); };
         document.getElementById('btnNext').onclick = () => { viewDate.setMonth(viewDate.getMonth() + 1); renderCalendar(viewDate); };
 
