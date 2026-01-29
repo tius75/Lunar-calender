@@ -239,22 +239,44 @@
         }
 
         function showDetail(solar, lunar) {
-            document.getElementById('panelDetail').style.display = 'block';
-            
-            const shio = lunar.getYearShengXiao();
-            document.getElementById('shioUtama').innerText = `Shio ${shio}`;
-            document.getElementById('elemenBadge').innerText = lunar.getYearNaYin();
-            document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
-            document.getElementById('tglLengkapLunar').innerText = `Tahun ${lunar.getYearInGanZhi()} - Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
-            
-            document.getElementById('btgLangit').innerText = lunar.getYearGan();
-            document.getElementById('cbgBumi').innerText = lunar.getYearZhi();
-            document.getElementById('zodiakBarat').innerText = solar.getXingZuo();
-            document.getElementById('solarTerm').innerText = lunar.getJieQi() || "Tidak ada fenomena";
-            
-            document.getElementById('teksRamalan').innerText = databaseRamalan[shio];
-            document.getElementById('panelDetail').scrollIntoView({ behavior: 'smooth' });
-        }
+    document.getElementById('panelDetail').style.display = 'block';
+    
+    // Konversi Nama Shio ke Indonesia
+    const shioIndo = {
+        "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci",
+        "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing",
+        "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi"
+    };
+
+    // Ambil Shio dalam bahasa Inggris lalu terjemahkan
+    const shioEn = lunar.getYearShengXiao();
+    const shio = shioIndo[shioEn] || shioEn;
+
+    // Mapping Batang Langit & Cabang Bumi ke Indonesia (Opsional, atau tetap karakter jika ingin otentik)
+    // Di sini kita biarkan karakter Mandarin tapi beri label Indonesia
+    
+    document.getElementById('shioUtama').innerText = `Shio ${shio}`;
+    document.getElementById('elemenBadge').innerText = lunar.getYearNaYin(); // Contoh: Api Lampu
+    document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
+    
+    // Format Tanggal Lunar Indonesia
+    const tglLunarIndo = `Tahun ${lunar.getYearInGanZhi()} - Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
+    document.getElementById('tglLengkapLunar').innerText = tglLunarIndo;
+    
+    document.getElementById('btgLangit').innerText = lunar.getYearGan();
+    document.getElementById('cbgBumi').innerText = lunar.getYearZhi();
+    document.getElementById('zodiakBarat').innerText = solar.getXingZuo(); // Contoh: Aquarius
+    
+    // Perbaikan Undefined & Fenomena Musim
+    const term = lunar.getJieQi();
+    document.getElementById('solarTerm').innerText = term ? term : "Tidak ada fenomena";
+    
+    // Ambil Ramalan dari Database
+    const teks = databaseRamalan[shio] || "Hari yang netral untuk melakukan aktivitas rutin.";
+    document.getElementById('teksRamalan').innerText = teks;
+
+    document.getElementById('panelDetail').scrollIntoView({ behavior: 'smooth' });
+}
 
         // Event Listener Cari
         document.getElementById('btnCari').onclick = () => {
