@@ -17,7 +17,6 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f5f5f5; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .app-container { width: 100%; max-width: 480px; background: var(--putih); border: 3px solid var(--emas); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
 
-        /* Header & Search */
         .search-bar { background: var(--krem); padding: 15px; display: flex; gap: 8px; border-bottom: 2px solid var(--emas); }
         .search-bar input { flex: 1; padding: 10px; border: 1px solid var(--emas); border-radius: 8px; }
         .btn-cari { background: var(--merah-tua); color: var(--emas); border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
@@ -26,14 +25,12 @@
         .header-nav { display: flex; justify-content: space-between; margin-top: 10px; }
         .btn-nav { background: var(--emas); color: var(--merah-tua); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-        /* Grid */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--krem); }
         .label-hari { background: var(--merah-terang); color: var(--putih); padding: 10px 0; text-align: center; font-size: 0.8rem; font-weight: bold; }
         .sel-tanggal { aspect-ratio: 1/1.2; border: 0.1px solid rgba(212, 175, 55, 0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: white; }
         .sel-tanggal.hari-ini { background: var(--merah-terang); color: var(--emas); }
         .sel-tanggal.pilihan { border: 2px solid var(--merah-tua); background: #ffebeb; }
 
-        /* Panel Detail */
         #panelDetail { padding: 15px; background: var(--putih); border-top: 3px solid var(--emas); display: none; }
         .kartu-info { background: var(--krem); padding: 15px; border-radius: 10px; border-left: 5px solid var(--merah-tua); }
         
@@ -77,7 +74,7 @@
                 <div class="grid-detail">
                     <div class="item-detail"><span class="label-kecil">Batang Langit</span><span class="isi-detail" id="btgLangit"></span></div>
                     <div class="item-detail"><span class="label-kecil">Cabang Bumi</span><span class="isi-detail" id="cbgBumi"></span></div>
-                    <div class="item-detail"><span class="label-kecil">Arah Rejeki</span><span class="isi-detail">Barat Daya</span></div>
+                    <div class="item-detail"><span class="label-kecil">Arah Rejeki</span><span class="isi-detail" id="arahRejeki">Barat Daya</span></div>
                     <div class="item-detail"><span class="label-kecil">Zodiak</span><span class="isi-detail" id="zodiakDisplay"></span></div>
                 </div>
 
@@ -144,41 +141,54 @@
         function showDetail(solar, lunar) {
             document.getElementById('panelDetail').style.display = 'block';
             
-            const shio = kamusShio[lunar.getYearShengXiao()];
+            // Perbaikan Shio (Menggunakan kamus terjemahan agar tidak undefined)
+            const shioEn = lunar.getYearShengXiao();
+            const shioIndo = kamusShio[shioEn] || shioEn;
+            
             const tahunK = lunar.getYear() + 551;
-            const zodiak = kamusZodiak[solar.getXingZuo()];
             const tglL = `${lunar.getDay()} - ${lunar.getMonth()} - ${tahunK}`;
+            const zodiak = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
+            const elemen = lunar.getYearNaYin();
+            const btg = kamusBatang[lunar.getYearGan()] || lunar.getYearGan();
+            const cbg = kamusCabang[lunar.getYearZhi()] || lunar.getYearZhi();
+            const arah = "Barat Daya";
 
-            document.getElementById('shioUtama').innerText = `Shio ${shio}`;
-            document.getElementById('elemenBadge').innerText = `Elemen: ${lunar.getYearNaYin()}`;
+            document.getElementById('shioUtama').innerText = `Shio ${shioIndo}`;
+            document.getElementById('elemenBadge').innerText = `Elemen: ${elemen}`;
             document.getElementById('tglMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
             document.getElementById('tglLunarNumerik').innerText = `Lunar: ${tglL}`;
-            document.getElementById('btgLangit').innerText = kamusBatang[lunar.getYearGan()];
-            document.getElementById('cbgBumi').innerText = kamusCabang[lunar.getYearZhi()];
+            document.getElementById('btgLangit').innerText = btg;
+            document.getElementById('cbgBumi').innerText = cbg;
             document.getElementById('zodiakDisplay').innerText = zodiak;
+            document.getElementById('arahRejeki').innerText = arah;
 
-            // Isi Konten Ramalan
-            const teksZod = `Hari ini ${zodiak} perlu fokus pada keuangan. Jangan terlalu boros untuk hal yang tidak perlu.`;
-            const teksJod = `Pasangan paling cocok untuk Shio ${shio} adalah ${jodohShio[shio]}.`;
-            let sembahyang = lunar.getDay() === 1 ? "Sembahyang Ce It (Awal Bulan)" : (lunar.getDay() === 15 ? "Sembahyang Cap Go (Purnama)" : "Jadwal rutin harian.");
+            // Konten Ramalan
+            const teksZod = `Hari ini ${zodiak} sebaiknya lebih teliti dalam urusan pekerjaan dan keuangan.`;
+            const daftarJodoh = jodohShio[shioIndo] || "N/A";
+            const teksJod = `Pasangan paling cocok untuk Shio ${shioIndo} adalah ${daftarJodoh}.`;
+            let sembahyang = "Jadwal rutin harian.";
+            if (lunar.getDay() === 1) sembahyang = "Sembahyang Ce It (Awal Bulan)";
+            if (lunar.getDay() === 15) sembahyang = "Sembahyang Cap Go (Purnama)";
 
             document.getElementById('teksZodiak').innerText = teksZod;
             document.getElementById('teksJodoh').innerText = teksJod;
             document.getElementById('teksRamalan').innerText = sembahyang;
 
-            // SHARE WHATSAPP (Rapi & Berjarak)
+            // Fitur WhatsApp Share (Semua isi Detail dimasukkan)
             document.getElementById('btnWhatsApp').onclick = () => {
                 const urlAplikasi = "tius75.github.io/Lunar-calender/";
                 const pesan = 
                     `🏮 *DATA KALENDER LUNAR & RAMALAN* 🏮%0A%0A` +
                     `📅 *MASEHI:* ${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}%0A` +
-                    `🌙 *LUNAR:* ${tglL}%0A` +
-                    `🐅 *SHIO:* ${shio} (${lunar.getYearNaYin()})%0A` +
-                    `🌌 *ZODIAK:* ${zodiak}%0A%0A` +
+                    `🌙 *LUNAR:* ${tglL}%0A%0A` +
+                    `🐅 *SHIO:* ${shioIndo} (${elemen})%0A` +
+                    `🌌 *ZODIAK:* ${zodiak}%0A` +
+                    `🧭 *ARAH REJEKI:* ${arah}%0A` +
+                    `🎋 *BATANG/CABANG:* ${btg} / ${cbg}%0A%0A` +
                     `---%0A%0A` +
                     `✨ *RAMALAN ZODIAK:*%0A${teksZod}%0A%0A` +
                     `💕 *CEK JODOH SHIO:*%0A${teksJod}%0A%0A` +
-                    `🕯️ *JADWAL SEMBAHYANG:*%0A${sembahyang}%0A%0A` +
+                    `🕯️ *INFO SEMBAHYANG:*%0A${sembahyang}%0A%0A` +
                     `---%0A%0A` +
                     `📱 _Cek peruntunganmu setiap hari di:_%0A${urlAplikasi}`;
                 
