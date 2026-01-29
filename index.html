@@ -104,6 +104,7 @@
         let viewDate = new Date();
         const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
+        // KAMUS TERJEMAHAN
         const kamusShio = { "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci", "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing", "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi" };
         const kamusBatang = { "甲": "Kayu Yang", "乙": "Kayu Yin", "丙": "Api Yang", "丁": "Api Yin", "戊": "Tanah Yang", "己": "Tanah Yin", "庚": "Logam Yang", "辛": "Logam Yin", "壬": "Air Yang", "癸": "Air Yin" };
         const kamusCabang = { "子": "Tikus (Air)", "丑": "Kerbau (Tanah)", "寅": "Macan (Kayu)", "卯": "Kelinci (Kayu)", "辰": "Naga (Tanah)", "巳": "Ular (Api)", "午": "Kuda (Api)", "未": "Kambing (Tanah)", "申": "Monyet (Logam)", "酉": "Ayam (Logam)", "戌": "Anjing (Tanah)", "亥": "Babi (Air)" };
@@ -141,9 +142,9 @@
         function showDetail(solar, lunar) {
             document.getElementById('panelDetail').style.display = 'block';
             
-            // Perbaikan Shio (Menggunakan kamus terjemahan agar tidak undefined)
-            const shioEn = lunar.getYearShengXiao();
-            const shioIndo = kamusShio[shioEn] || shioEn;
+            // Logika Penentuan Shio (Mencegah Undefined)
+            const shioAsli = lunar.getYearShengXiao();
+            const shioIndo = kamusShio[shioAsli] || shioAsli;
             
             const tahunK = lunar.getYear() + 551;
             const tglL = `${lunar.getDay()} - ${lunar.getMonth()} - ${tahunK}`;
@@ -164,8 +165,7 @@
 
             // Konten Ramalan
             const teksZod = `Hari ini ${zodiak} sebaiknya lebih teliti dalam urusan pekerjaan dan keuangan.`;
-            const daftarJodoh = jodohShio[shioIndo] || "N/A";
-            const teksJod = `Pasangan paling cocok untuk Shio ${shioIndo} adalah ${daftarJodoh}.`;
+            const teksJod = `Pasangan paling cocok untuk Shio ${shioIndo} adalah ${jodohShio[shioIndo] || "N/A"}.`;
             let sembahyang = "Jadwal rutin harian.";
             if (lunar.getDay() === 1) sembahyang = "Sembahyang Ce It (Awal Bulan)";
             if (lunar.getDay() === 15) sembahyang = "Sembahyang Cap Go (Purnama)";
@@ -174,23 +174,21 @@
             document.getElementById('teksJodoh').innerText = teksJod;
             document.getElementById('teksRamalan').innerText = sembahyang;
 
-            // Fitur WhatsApp Share (Semua isi Detail dimasukkan)
+            // Fitur WhatsApp Share (DIPERBAIKI)
             document.getElementById('btnWhatsApp').onclick = () => {
-                const urlAplikasi = "tius75.github.io/Lunar-calender/";
                 const pesan = 
-                    `🏮 *DATA KALENDER LUNAR & RAMALAN* 🏮%0A%0A` +
-                    `📅 *MASEHI:* ${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}%0A` +
-                    `🌙 *LUNAR:* ${tglL}%0A%0A` +
-                    `🐅 *SHIO:* ${shioIndo} (${elemen})%0A` +
-                    `🌌 *ZODIAK:* ${zodiak}%0A` +
-                    `🧭 *ARAH REJEKI:* ${arah}%0A` +
-                    `🎋 *BATANG/CABANG:* ${btg} / ${cbg}%0A%0A` +
+                    `🏮 *RAMALAN LUNAR HARIAN* 🏮%0A%0A` +
+                    `📅 *Masehi:* ${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}%0A` +
+                    `🌙 *Lunar:* ${tglL}%0A%0A` +
+                    `🐅 *Shio:* ${shioIndo} (${elemen})%0A` +
+                    `🌌 *Zodiak:* ${zodiak}%0A` +
+                    `🧭 *Arah Rejeki:* ${arah}%0A%0A` +
                     `---%0A%0A` +
-                    `✨ *RAMALAN ZODIAK:*%0A${teksZod}%0A%0A` +
-                    `💕 *CEK JODOH SHIO:*%0A${teksJod}%0A%0A` +
-                    `🕯️ *INFO SEMBAHYANG:*%0A${sembahyang}%0A%0A` +
+                    `✨ *Ramalan Zodiak:*%0A${teksZod}%0A%0A` +
+                    `💕 *Jodoh Shio:*%0A${teksJod}%0A%0A` +
+                    `🕯️ *Sembahyang:*%0A${sembahyang}%0A%0A` +
                     `---%0A%0A` +
-                    `📱 _Cek peruntunganmu setiap hari di:_%0A${urlAplikasi}`;
+                    `_Dikirim via: tius75.github.io/Lunar-calender/_`;
                 
                 window.open(`https://api.whatsapp.com/send?text=${pesan}`, '_blank');
             };
