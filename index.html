@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Lunar Komplit - Fitur Cari</title>
+    <title>Kalender Lunar Indonesia Komplit</title>
     <style>
         :root {
             --merah-tua: #8b0000;
@@ -14,13 +14,13 @@
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
         }
 
         .app-container {
@@ -33,33 +33,7 @@
             overflow: hidden;
         }
 
-        /* Search Section */
-        .search-section {
-            background: var(--krem);
-            padding: 15px;
-            display: flex;
-            gap: 10px;
-            border-bottom: 2px solid var(--emas);
-        }
-
-        .search-section input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid var(--emas);
-            border-radius: 5px;
-        }
-
-        .btn-cari {
-            background: var(--merah-tua);
-            color: var(--emas);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Header */
+        /* Navigasi & Header */
         .calendar-header {
             background: var(--merah-tua);
             color: var(--emas);
@@ -77,13 +51,13 @@
             background: var(--emas);
             color: var(--merah-tua);
             border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
+            padding: 8px 15px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
         }
 
-        /* Grid */
+        /* Grid Kalender */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -95,7 +69,7 @@
             color: var(--putih);
             padding: 10px 0;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: bold;
         }
 
@@ -108,16 +82,17 @@
             justify-content: center;
             cursor: pointer;
             background: white;
+            transition: 0.2s;
         }
 
-        .sel-tanggal:hover { background: #fff5f5; border: 1px solid var(--emas); }
-        .sel-tanggal.pilihan { border: 2px solid var(--merah-tua); background: #ffebeb; }
+        .sel-tanggal:hover { background: #fff5f5; }
         .sel-tanggal.hari-ini { background: var(--merah-terang); color: var(--emas); }
+        .sel-tanggal.pilihan { border: 2px solid var(--merah-tua); background: #ffebeb; }
 
-        .tgl-masehi { font-size: 1rem; font-weight: bold; }
-        .tgl-lunar { font-size: 0.6rem; color: var(--merah-tua); text-align: center; }
+        .tgl-masehi { font-size: 1.1rem; font-weight: bold; }
+        .tgl-lunar-kecil { font-size: 0.65rem; color: var(--merah-tua); text-align: center; margin-top: 2px; }
 
-        /* Detail Ramalan */
+        /* Detail Panel */
         #panelDetail {
             padding: 20px;
             background: var(--putih);
@@ -132,28 +107,49 @@
             border-left: 5px solid var(--merah-tua);
         }
 
+        .shio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #shioUtama { font-size: 1.6rem; font-weight: bold; color: var(--merah-tua); }
+        #elemenBadge { background: var(--merah-tua); color: var(--emas); padding: 4px 12px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
+
         .grid-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-top: 10px;
-            font-size: 0.85rem;
+            margin: 15px 0;
         }
 
-        .info-item { background: white; padding: 5px 10px; border-radius: 5px; border: 1px solid #eee; }
-        .label-kecil { font-size: 0.7rem; color: #888; display: block; }
+        .info-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .label-kecil { font-size: 0.7rem; color: #888; margin-bottom: 2px; }
+        .isi-item { font-size: 0.9rem; font-weight: bold; color: #333; }
+
+        .ramalan-box {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--emas);
+        }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <div class="search-section">
-            <input type="date" id="inputCari">
-            <button class="btn-cari" id="btnCari">CARI</button>
-        </div>
-
         <div class="calendar-header">
-            <h2 id="judulBulan">Januari 2026</h2>
+            <h2 id="judulBulan" style="margin:0">Januari 2026</h2>
             <div class="header-nav">
                 <button class="btn-nav" id="btnPrev">Sebelumnya</button>
                 <button class="btn-nav" id="btnNext">Berikutnya</button>
@@ -164,22 +160,37 @@
 
         <div id="panelDetail">
             <div class="kartu-info">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div id="shioUtama" style="font-size: 1.5rem; font-weight: bold; color: var(--merah-tua);"></div>
-                    <div id="elemenBadge" style="background: var(--merah-tua); color: var(--emas); padding: 3px 10px; border-radius: 5px; font-size: 0.8rem;"></div>
+                <div class="shio-header">
+                    <div id="shioUtama">Shio</div>
+                    <div id="elemenBadge">Elemen</div>
                 </div>
                 
-                <div id="tglLengkapMasehi" style="font-weight: bold; margin-top: 10px;"></div>
-                <div id="tglLengkapLunar" style="color: var(--merah-terang); font-size: 0.9rem;"></div>
+                <div id="tglLengkapMasehi" style="font-weight: bold; font-size: 1.1rem;"></div>
+                <div id="tglLengkapLunar" style="margin-top: 5px;"></div>
                 
                 <div class="grid-info">
-                    <div class="info-item"><span class="label-kecil">Batang Langit</span><span id="btgLangit">-</span></div>
-                    <div class="info-item"><span class="label-kecil">Cabang Bumi</span><span id="cbgBumi">-</span></div>
-                    <div class="info-item"><span class="label-kecil">Zodiak</span><span id="zodiakBarat">-</span></div>
-                    <div class="info-item"><span class="label-kecil">Musim (Solar Terms)</span><span id="solarTerm">-</span></div>
+                    <div class="info-item">
+                        <span class="label-kecil">Batang Langit</span>
+                        <span class="isi-item" id="btgLangit">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label-kecil">Cabang Bumi</span>
+                        <span class="isi-item" id="cbgBumi">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label-kecil">Zodiak</span>
+                        <span class="isi-item" id="zodiakBarat">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label-kecil">Musim (Solar Terms)</span>
+                        <span class="isi-item" id="solarTerm">-</span>
+                    </div>
                 </div>
 
-                <p id="teksRamalan" style="margin-top: 15px; font-size: 0.9rem; line-height: 1.5; border-top: 1px dashed var(--emas); padding-top: 10px;"></p>
+                <div class="ramalan-box" id="ramalanArea">
+                    <div id="infoSembahyang" style="color: var(--merah-terang); font-weight: bold; margin-bottom: 8px;"></div>
+                    <div id="teksRamalan" style="font-size: 0.95rem; line-height: 1.5; color: #444;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -190,146 +201,114 @@
         let viewDate = new Date();
         const daftarBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
+        // Kamus Terjemahan Lengkap
+        const kamusShio = { "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci", "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing", "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi" };
+        const kamusBatang = { "甲": "Kayu Yang", "乙": "Kayu Yin", "丙": "Api Yang", "丁": "Api Yin", "戊": "Tanah Yang", "己": "Tanah Yin", "庚": "Logam Yang", "辛": "Logam Yin", "壬": "Air Yang", "癸": "Air Yin" };
+        const kamusCabang = { "子": "Tikus (Air)", "丑": "Kerbau (Tanah)", "寅": "Macan (Kayu)", "卯": "Kelinci (Kayu)", "辰": "Naga (Tanah)", "巳": "Ular (Api)", "午": "Kuda (Api)", "未": "Kambing (Tanah)", "申": "Monyet (Logam)", "酉": "Ayam (Logam)", "戌": "Anjing (Tanah)", "亥": "Babi (Air)" };
+        const kamusZodiak = { "水瓶": "Aquarius", "双鱼": "Pisces", "白羊": "Aries", "金牛": "Taurus", "双子": "Gemini", "巨蟹": "Cancer", "狮子": "Leo", "处女": "Virgo", "天秤": "Libra", "天蝎": "Scorpio", "射手": "Sagitarius", "摩羯": "Capricorn" };
+
         const databaseRamalan = {
-            "Tikus": "Hari ini membawa energi kemakmuran. Bagus untuk negosiasi bisnis.",
-            "Kerbau": "Fokus pada kestabilan. Jangan terburu-buru mengambil resiko besar.",
-            "Macan": "Waktu yang tepat untuk menunjukkan kepemimpinan Anda.",
-            "Kelinci": "Hari yang tenang. Gunakan untuk mempererat hubungan keluarga.",
-            "Naga": "Keberuntungan bersinar pada Anda. Ambillah kesempatan yang muncul.",
-            "Ular": "Pikirkan matang-matang sebelum bicara. Kebijaksanaan diperlukan.",
-            "Kuda": "Kebebasan dan petualangan menanti. Hari yang dinamis.",
-            "Kambing": "Sisi artistik Anda sedang kuat. Cocok untuk kegiatan seni.",
-            "Monyet": "Kecerdasan Anda akan menemukan jalan keluar dari masalah rumit.",
-            "Ayam": "Ketelitian Anda akan mencegah kesalahan besar hari ini.",
-            "Anjing": "Kesetiaan Anda akan dihargai oleh seseorang yang penting.",
-            "Babi": "Kebahagiaan datang dari hal-hal sederhana hari ini."
+            "Tikus": "Peluang baru muncul di depan mata. Tetaplah rendah hati.",
+            "Kerbau": "Waktu yang tepat untuk menabung dan merencanakan masa depan.",
+            "Macan": "Energi yang kuat hari ini, cocok untuk menyelesaikan tugas sulit.",
+            "Kelinci": "Kedamaian batin membawa keberuntungan. Hindari keributan.",
+            "Naga": "Karir Anda sedang bersinar. Ambil inisiatif lebih banyak.",
+            "Ular": "Telitilah sebelum menandatangani dokumen apa pun.",
+            "Kuda": "Keberuntungan dalam perjalanan. Ide kreatif akan muncul.",
+            "Kambing": "Harmoni keluarga membawa kebahagiaan bagi Anda hari ini.",
+            "Monyet": "Gunakan kecerdikan Anda untuk membantu orang di sekitar.",
+            "Ayam": "Fokus pada kesehatan fisik. Jangan bekerja terlalu keras.",
+            "Anjing": "Kesetiaan Anda akan mendapat balasan yang manis.",
+            "Babi": "Kesejahteraan materi sedang meningkat. Berbagilah dengan sesama."
         };
 
-        function render(tgl, highlightDay = null) {
+        function renderCalendar(tgl) {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
             
-            const y = tgl.getFullYear();
-            const m = tgl.getMonth();
-            document.getElementById('judulBulan').innerText = `${daftarBulan[m]} ${y}`;
+            const year = tgl.getFullYear();
+            const month = tgl.getMonth();
+            document.getElementById('judulBulan').innerText = `${daftarBulan[month]} ${year}`;
 
             ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].forEach(h => {
                 grid.innerHTML += `<div class="label-hari">${h}</div>`;
             });
 
-            const startDay = new Date(y, m, 1).getDay();
-            const totalDays = new Date(y, m + 1, 0).getDate();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            for (let i = 0; i < startDay; i++) grid.innerHTML += `<div></div>`;
+            for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
 
-            for (let d = 1; d <= totalDays; d++) {
-                const s = Solar.fromYmd(y, m + 1, d);
+            for (let d = 1; d <= daysInMonth; d++) {
+                const s = Solar.fromYmd(year, month + 1, d);
                 const l = s.getLunar();
-                const isToday = new Date().toDateString() === new Date(y, m, d).toDateString();
-                const isSelected = highlightDay === d;
+                const isToday = new Date().toDateString() === new Date(year, month, d).toDateString();
 
                 const sel = document.createElement('div');
-                sel.className = `sel-tanggal ${isToday ? 'hari-ini' : ''} ${isSelected ? 'pilihan' : ''}`;
-                sel.innerHTML = `<span class="tgl-masehi">${d}</span><span class="tgl-lunar">${l.getDayInChinese()}</span>`;
-                sel.onclick = () => showDetail(s, l);
+                sel.className = `sel-tanggal ${isToday ? 'hari-ini' : ''}`;
+                sel.innerHTML = `<span class="tgl-masehi">${d}</span><span class="tgl-lunar-kecil">${l.getDayInChinese()}</span>`;
+                sel.onclick = () => {
+                    document.querySelectorAll('.sel-tanggal').forEach(s => s.classList.remove('pilihan'));
+                    sel.classList.add('pilihan');
+                    showDetail(s, l);
+                };
                 grid.appendChild(sel);
-
-                if(isSelected) showDetail(s, l);
+                if(isToday) showDetail(s, l);
             }
         }
 
         function showDetail(solar, lunar) {
-    const panel = document.getElementById('panelDetail');
-    panel.style.display = 'block';
-    
-    // Kamus Terjemahan
-    const kamusShio = {
-        "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci",
-        "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing",
-        "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi"
-    };
+            document.getElementById('panelDetail').style.display = 'block';
+            
+            // Konversi Shio
+            const shioEn = lunar.getYearShengXiao();
+            const shioIndo = kamusShio[shioEn] || shioEn;
 
-    const kamusBatang = {
-        "甲": "Kayu Yang", "乙": "Kayu Yin", "丙": "Api Yang", "丁": "Api Yin",
-        "戊": "Tanah Yang", "己": "Tanah Yin", "庚": "Logam Yang", "辛": "Logam Yin",
-        "壬": "Air Yang", "癸": "Air Yin"
-    };
+            // --- UPDATE TANGGAL LUNAR FORMAT INDO ---
+            const tglL = lunar.getDay();
+            const blnL = lunar.getMonth();
+            const thnL = lunar.getYear(); // Tahun Imlek (Contoh 2576)
 
-    const kamusCabang = {
-        "子": "Tikus (Air)", "丑": "Kerbau (Tanah)", "寅": "Macan (Kayu)", "卯": "Kelinci (Kayu)",
-        "辰": "Naga (Tanah)", "巳": "Ular (Api)", "午": "Kuda (Api)", "未": "Kambing (Tanah)",
-        "申": "Monyet (Logam)", "酉": "Ayam (Logam)", "戌": "Anjing (Tanah)", "亥": "Babi (Air)"
-    };
+            document.getElementById('shioUtama').innerText = `Shio ${shioIndo}`;
+            document.getElementById('elemenBadge').innerText = lunar.getYearNaYin();
+            document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
+            
+            // Format yang diminta: Lunar: 11 - 12 - 2576
+            document.getElementById('tglLengkapLunar').innerHTML = `
+                <div style="font-size: 1.1rem; font-weight: bold; color: #b30000;">Lunar: ${tglL} - ${blnL} - ${thnL}</div>
+                <div style="font-size: 0.8rem; color: #666; margin-top:3px;">
+                    Tahun ${lunar.getYearInGanZhi()} (${lunar.getYearInChinese()}) - Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}
+                </div>
+            `;
 
-    const kamusZodiak = {
-        "水瓶": "Aquarius", "双鱼": "Pisces", "白羊": "Aries", "金牛": "Taurus",
-        "双子": "Gemini", "巨蟹": "Cancer", "狮子": "Leo", "处女": "Virgo",
-        "天秤": "Libra", "天蝎": "Scorpio", "射手": "Sagitarius", "摩羯": "Capricorn"
-    };
+            // Update Isian Detail (Full Indonesia)
+            document.getElementById('btgLangit').innerText = kamusBatang[lunar.getYearGan()] || lunar.getYearGan();
+            document.getElementById('cbgBumi').innerText = kamusCabang[lunar.getYearZhi()] || lunar.getYearZhi();
+            document.getElementById('zodiakBarat').innerText = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
+            document.getElementById('solarTerm').innerText = lunar.getJieQi() || "Tidak ada fenomena";
 
-    // Ambil Data & Terjemahkan
-    const shioEn = lunar.getYearShengXiao();
-    const shioIndo = kamusShio[shioEn] || shioEn;
-    const btgLangit = kamusBatang[lunar.getYearGan()] || lunar.getYearGan();
-    const cbgBumi = kamusCabang[lunar.getYearZhi()] || lunar.getYearZhi();
-    const zodiakIndo = kamusZodiak[solar.getXingZuo()] || solar.getXingZuo();
+            // Logika Sembahyang & Ramalan
+            let sembahyang = "✨ Jadwal rutin harian.";
+            if (tglL === 1) sembahyang = "🏮 Sembahyang Ce It (Awal Bulan)";
+            else if (tglL === 15) sembahyang = "🌕 Sembahyang Cap Go (Purnama)";
+            
+            // Deteksi Hari Raya Besar
+            if (blnL === 1 && tglL === 1) sembahyang = "🧨 TAHUN BARU IMLEK 🧨";
+            if (blnL === 1 && tglL === 15) sembahyang = "🏮 Cap Go Meh 🏮";
+            if (blnL === 5 && tglL === 5) sembahyang = "🛶 Sembahyang Peh Cun (Bakcang)";
+            if (blnL === 8 && tglL === 15) sembahyang = "🥮 Sembahyang Tiong Chiu (Kue Bulan)";
 
-    // Logika Sembahyang
-    let infoSembahyang = "Jadwal rutin harian.";
-    const tglLunar = lunar.getDay();
-    const blnLunar = lunar.getMonth();
+            document.getElementById('infoSembahyang').innerText = sembahyang;
+            document.getElementById('teksRamalan').innerText = databaseRamalan[shioIndo] || "Semoga hari ini penuh berkah.";
 
-    if (tglLunar === 1) infoSembahyang = "Sembahyang Ce It (Awal Bulan)";
-    else if (tglLunar === 15) infoSembahyang = "Sembahyang Cap Go (Purnama)";
-    
-    // Hari Raya Besar
-    if (blnLunar === 1 && tglLunar === 1) infoSembahyang = "Tahun Baru Imlek 2577";
-    if (blnLunar === 1 && tglLunar === 15) infoSembahyang = "Cap Go Meh";
-    if (blnLunar === 5 && tglLunar === 5) infoSembahyang = "Sembahyang Peh Cun (Bakcang)";
-    if (blnLunar === 8 && tglLunar === 15) infoSembahyang = "Sembahyang Tiong Chiu (Kue Bulan)";
-
-    // Update Tampilan
-    document.getElementById('shioUtama').innerText = `Shio ${shioIndo}`;
-    document.getElementById('elemenBadge').innerText = lunar.getYearNaYin(); // Contoh: Api Lampu
-    document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
-    
-    // Tanggal Lunar Format Indonesia
-    const teksLunar = `Tahun ${lunar.getYearInGanZhi()} (${lunar.getYearInChinese()}) \n Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
-    document.getElementById('tglLengkapLunar').innerText = teksLunar;
-
-    document.getElementById('btgLangit').innerText = btgLangit;
-    document.getElementById('cbgBumi').innerText = cbgBumi;
-    document.getElementById('zodiakBarat').innerText = zodiakIndo;
-    
-    const term = lunar.getJieQi();
-    document.getElementById('solarTerm').innerText = term ? term : "Tidak ada fenomena";
-
-    // Ramalan & Sembahyang
-    const ramalanTeks = databaseRamalan[shioIndo] || "Semoga hari ini penuh berkah.";
-    document.getElementById('teksRamalan').innerHTML = `
-        <div style="color: #b30000; font-weight: bold; margin-bottom: 8px;">✨ ${infoSembahyang}</div>
-        <div>${ramalanTeks}</div>
-    `;
-
-    panel.scrollIntoView({ behavior: 'smooth' });
-}
-
-
-
-        // Event Listener Cari
-        document.getElementById('btnCari').onclick = () => {
-            const val = document.getElementById('inputCari').value;
-            if(!val) return;
-            const d = new Date(val);
-            viewDate = d;
-            render(viewDate, d.getDate());
-        };
+            document.getElementById('panelDetail').scrollIntoView({ behavior: 'smooth' });
+        }
 
         // Navigasi
-        document.getElementById('btnPrev').onclick = () => { viewDate.setMonth(viewDate.getMonth() - 1); render(viewDate); };
-        document.getElementById('btnNext').onclick = () => { viewDate.setMonth(viewDate.getMonth() + 1); render(viewDate); };
+        document.getElementById('btnPrev').onclick = () => { viewDate.setMonth(viewDate.getMonth() - 1); renderCalendar(viewDate); };
+        document.getElementById('btnNext').onclick = () => { viewDate.setMonth(viewDate.getMonth() + 1); renderCalendar(viewDate); };
 
-        render(viewDate);
+        renderCalendar(viewDate);
     </script>
 </body>
 </html>
