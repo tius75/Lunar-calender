@@ -67,3 +67,15 @@
     background: var(--gold);
     color: white;
 }
+
+.info-item {
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    min-height: 55px; /* Memberi ruang lebih untuk teks Indonesia yang panjang */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
