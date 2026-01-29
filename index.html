@@ -239,44 +239,60 @@
         }
 
         function showDetail(solar, lunar) {
-    document.getElementById('panelDetail').style.display = 'block';
+    const panel = document.getElementById('panelDetail');
+    panel.style.display = 'block';
     
-    // Konversi Nama Shio ke Indonesia
+    // 1. Konversi Nama Shio
     const shioIndo = {
         "Rat": "Tikus", "Ox": "Kerbau", "Tiger": "Macan", "Rabbit": "Kelinci",
         "Dragon": "Naga", "Snake": "Ular", "Horse": "Kuda", "Goat": "Kambing",
         "Monkey": "Monyet", "Rooster": "Ayam", "Dog": "Anjing", "Pig": "Babi"
     };
+    const shio = shioIndo[lunar.getYearShengXiao()] || lunar.getYearShengXiao();
 
-    // Ambil Shio dalam bahasa Inggris lalu terjemahkan
-    const shioEn = lunar.getYearShengXiao();
-    const shio = shioIndo[shioEn] || shioEn;
+    // 2. Deteksi Hari Sembahyang / Hari Raya
+    let infoSembahyang = "Jadwal rutin harian.";
+    const tglLunar = lunar.getDay();
+    const blnLunar = lunar.getMonth();
 
-    // Mapping Batang Langit & Cabang Bumi ke Indonesia (Opsional, atau tetap karakter jika ingin otentik)
-    // Di sini kita biarkan karakter Mandarin tapi beri label Indonesia
-    
+    if (tglLunar === 1) infoSembahyang = "Sembahyang Ce It (Awal Bulan)";
+    else if (tglLunar === 15) infoSembahyang = "Sembahyang Cap Go (Purnama)";
+
+    // Tambahan Hari Raya Besar (Contoh)
+    if (blnLunar === 1 && tglLunar === 1) infoSembahyang = "Hari Raya Imlek (Sembahyang Tahun Baru)";
+    if (blnLunar === 1 && tglLunar === 15) infoSembahyang = "Cap Go Meh";
+    if (blnLunar === 5 && tglLunar === 5) infoSembahyang = "Sembahyang Peh Cun";
+    if (blnLunar === 8 && tglLunar === 15) infoSembahyang = "Sembahyang Kue Bulan (Tiong Chiu)";
+
+    // 3. Update UI
     document.getElementById('shioUtama').innerText = `Shio ${shio}`;
-    document.getElementById('elemenBadge').innerText = lunar.getYearNaYin(); // Contoh: Api Lampu
+    document.getElementById('elemenBadge').innerText = lunar.getYearNaYin();
+    
+    // Tampilan Tanggal Masehi
     document.getElementById('tglLengkapMasehi').innerText = `${solar.getDay()} ${daftarBulan[solar.getMonth()-1]} ${solar.getYear()}`;
     
-    // Format Tanggal Lunar Indonesia
-    const tglLunarIndo = `Tahun ${lunar.getYearInGanZhi()} - Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
-    document.getElementById('tglLengkapLunar').innerText = tglLunarIndo;
+    // Tanggal Chinese (Hanzi) & Indonesia
+    const teksLunarFull = `Tahun ${lunar.getYearInGanZhi()} (${lunar.getYearInChinese()}) \n Bulan ${lunar.getMonthInChinese()} - Hari ${lunar.getDayInChinese()}`;
+    document.getElementById('tglLengkapLunar').innerText = teksLunarFull;
     
-    document.getElementById('btgLangit').innerText = lunar.getYearGan();
-    document.getElementById('cbgBumi').innerText = lunar.getYearZhi();
-    document.getElementById('zodiakBarat').innerText = solar.getXingZuo(); // Contoh: Aquarius
+    // Data Teknis
+    document.getElementById('btgLangit').innerText = `${lunar.getYearGan()} (Batang)`;
+    document.getElementById('cbgBumi').innerText = `${lunar.getYearZhi()} (Cabang)`;
+    document.getElementById('zodiakBarat').innerText = solar.getXingZuo();
     
-    // Perbaikan Undefined & Fenomena Musim
     const term = lunar.getJieQi();
     document.getElementById('solarTerm').innerText = term ? term : "Tidak ada fenomena";
     
-    // Ambil Ramalan dari Database
-    const teks = databaseRamalan[shio] || "Hari yang netral untuk melakukan aktivitas rutin.";
-    document.getElementById('teksRamalan').innerText = teks;
+    // Tampilkan Info Sembahyang di area ramalan
+    const ramalanTeks = databaseRamalan[shio] || "Semoga hari ini penuh berkah.";
+    document.getElementById('teksRamalan').innerHTML = `
+        <div style="color: #b30000; font-weight: bold; margin-bottom: 8px;">✨ ${infoSembahyang}</div>
+        <div>${ramalanTeks}</div>
+    `;
 
-    document.getElementById('panelDetail').scrollIntoView({ behavior: 'smooth' });
+    panel.scrollIntoView({ behavior: 'smooth' });
 }
+
 
         // Event Listener Cari
         document.getElementById('btnCari').onclick = () => {
