@@ -1,24 +1,279 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Lunar Calendar & Fortune</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalender Lunar & Ramalan Lengkap</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-        .calendar-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 400px; }
-        .fortune-box { margin-top: 15px; padding: 10px; border-left: 4px solid #d32f2f; background: #fff5f5; }
+        /* CSS Nuansa Merah & Emas */
+        :root {
+            --dark-red: #8b0000;
+            --bright-red: #d32f2f;
+            --gold: #d4af37;
+            --pale-gold: #fcf4dd;
+            --white: #ffffff;
+            --text-dark: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--white);
+            border: 4px solid var(--gold);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .calendar-header {
+            background: var(--dark-red);
+            color: var(--gold);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .nav-controls button {
+            background: var(--gold);
+            color: var(--dark-red);
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Grid Kalender */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--pale-gold);
+        }
+
+        .day-label {
+            background: var(--bright-red);
+            color: var(--white);
+            padding: 10px 0;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .day-cell {
+            aspect-ratio: 1/1.1;
+            border: 0.1px solid rgba(212, 175, 55, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .day-cell:hover {
+            background: var(--white);
+            transform: scale(1.05);
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .day-cell.today {
+            background: var(--bright-red) !important;
+            color: var(--gold) !important;
+        }
+
+        .day-cell.today .lunar-num { color: var(--white); }
+
+        .solar-num {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .lunar-num {
+            font-size: 0.65rem;
+            color: var(--bright-red);
+        }
+
+        /* Panel Ramalan */
+        #fortunePanel {
+            padding: 20px;
+            background: var(--white);
+            border-top: 2px solid var(--gold);
+            display: none; /* Muncul saat tanggal diklik */
+        }
+
+        .fortune-card {
+            background: var(--pale-gold);
+            border-left: 5px solid var(--dark-red);
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .shio-tag {
+            display: inline-block;
+            background: var(--dark-red);
+            color: var(--gold);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="calendar-card">
-        <h2>Kalender Lunar & Ramalan</h2>
-        <input type="date" id="dateInput">
-        <button id="checkBtn">Cek Ramalan</button>
-
-        <div id="result" style="margin-top: 20px;">
+    <div class="app-container">
+        <div class="calendar-header">
+            <h2 id="monthTitle">Januari 2024</h2>
+            <div class="nav-controls">
+                <button id="prevBtn">Prev</button>
+                <button id="nextBtn">Next</button>
             </div>
+        </div>
+
+        <div class="calendar-grid" id="grid">
+            </div>
+
+        <div id="fortunePanel">
+            <div class="fortune-card">
+                <div id="shioDisplay" class="shio-tag">Shio Naga</div>
+                <div id="dateDisplay" style="font-weight: bold; margin-bottom: 5px;"></div>
+                <div id="lunarFullDisplay" style="font-size: 0.9rem; color: #666; margin-bottom: 10px;"></div>
+                <hr>
+                <p id="fortuneText" style="font-size: 0.95rem; line-height: 1.4;"></p>
+            </div>
+        </div>
     </div>
 
-    <script type="module" src="main.js"></script>
+    <script type="module">
+        // Import library dari CDN
+        import { Solar, Lunar } from 'https://esm.run/lunar-javascript';
+
+        let currentNavDate = new Date();
+
+        const gridElement = document.getElementById('grid');
+        const monthTitle = document.getElementById('monthTitle');
+        const fortunePanel = document.getElementById('fortunePanel');
+
+        // Database Ramalan Sederhana (Bisa dikembangkan di file fortune.js terpisah)
+        const ramalanShio = {
+            "Tikus": "Hari ini penuh peluang kreatif, jangan ragu melangkah.",
+            "Kerbau": "Kesabaran adalah kunci. Hindari konflik di tempat kerja.",
+            "Macan": "Energi Anda sedang tinggi, waktu tepat untuk olahraga atau proyek baru.",
+            "Kelinci": "Fokus pada harmoni keluarga dan istirahat yang cukup.",
+            "Naga": "Keberuntungan finansial sedang mendekat, tetap waspada.",
+            "Ular": "Intuisi Anda tajam hari ini, ikuti kata hati.",
+            "Kuda": "Banyak interaksi sosial yang menyenangkan menanti Anda.",
+            "Kambing": "Waktu yang tepat untuk refleksi diri dan hobi.",
+            "Monyet": "Kecerdasan Anda akan membantu menyelesaikan masalah sulit.",
+            "Ayam": "Perhatikan detail kecil dalam pekerjaan Anda hari ini.",
+            "Anjing": "Kesetiaan dan kejujuran Anda akan membuahkan hasil.",
+            "Babi": "Nikmati momen kecil, hari ini adalah tentang kenyamanan."
+        };
+
+        function initCalendar(date) {
+            gridElement.innerHTML = '';
+            const year = date.getFullYear();
+            const month = date.getMonth(); // 0-11
+
+            // Judul Header
+            const options = { month: 'long', year: 'numeric' };
+            monthTitle.innerText = date.toLocaleDateString('id-ID', options);
+
+            // Label Hari
+            const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+            days.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'day-label';
+                div.innerText = day;
+                gridElement.appendChild(div);
+            });
+
+            // Perhitungan Tanggal
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Padding awal bulan
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'day-cell';
+                gridElement.appendChild(emptyCell);
+            }
+
+            // Loop Tanggal
+            for (let d = 1; d <= daysInMonth; d++) {
+                const solar = Solar.fromYmd(year, month + 1, d);
+                const lunar = solar.getLunar();
+                
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                
+                // Cek hari ini
+                const isToday = new Date().toDateString() === new Date(year, month, d).toDateString();
+                if (isToday) cell.classList.add('today');
+
+                cell.innerHTML = `
+                    <span class="solar-num">${d}</span>
+                    <span class="lunar-num">${lunar.getDayInChinese()}</span>
+                `;
+
+                // Event Klik Ramalan
+                cell.onclick = () => showFortune(solar, lunar);
+                
+                gridElement.appendChild(cell);
+            }
+        }
+
+        function showFortune(solar, lunar) {
+            fortunePanel.style.display = 'block';
+            const shio = lunar.getYearShengXiao();
+            
+            document.getElementById('dateDisplay').innerText = `Masehi: ${solar.toYmd()}`;
+            document.getElementById('lunarFullDisplay').innerText = `Lunar: ${lunar.getYearInChinese()} ${lunar.getMonthInChinese()} ${lunar.getDayInChinese()}`;
+            document.getElementById('shioDisplay').innerText = `Shio ${shio} (${lunar.getYearNaYin()})`;
+            document.getElementById('fortuneText').innerText = ramalanShio[shio] || "Semoga hari Anda menyenangkan!";
+            
+            // Scroll otomatis ke panel ramalan
+            fortunePanel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Navigasi
+        document.getElementById('prevBtn').onclick = () => {
+            currentNavDate.setMonth(currentNavDate.getMonth() - 1);
+            initCalendar(currentNavDate);
+            fortunePanel.style.display = 'none';
+        };
+
+        document.getElementById('nextBtn').onclick = () => {
+            currentNavDate.setMonth(currentNavDate.getMonth() + 1);
+            initCalendar(currentNavDate);
+            fortunePanel.style.display = 'none';
+        };
+
+        // Jalankan saat load
+        initCalendar(currentNavDate);
+
+    </script>
 </body>
 </html>
