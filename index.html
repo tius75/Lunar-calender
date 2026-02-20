@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Kalender Lunar & Ramalan Shio Indonesia</title>
-    <style>
+  
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8b0000">
+<link rel="apple-touch-icon" href="logo.png">
+  
+  <style>
         * {
             margin: 0;
             padding: 0;
@@ -1358,6 +1363,16 @@ const imlekDates = {
         renderRamalanTahunan();
         render12Shio();
     };
+
+if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker terdaftar!', reg))
+                .catch(err => console.log('Service Worker gagal:', err));
+        });
+    }
+
+
 </script>
 
 </body>
