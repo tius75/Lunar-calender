@@ -871,12 +871,12 @@
         document.getElementById('masehiDate').innerText = `${day} ${bulanIndo[month-1]} ${year}`;
         
         // Hitung tahun lunar (tambah 551 dari tahun Masehi, tapi disesuaikan dengan Imlek)
-        let lunarYear = year + 550;
+        let lunarYear = year + 551;
         const imlekThisYear = imlekDates[year];
         if (imlekThisYear) {
             const imlekDate = new Date(imlekThisYear[0], imlekThisYear[1], imlekThisYear[2]);
             if (dateObj && dateObj < imlekDate) {
-                lunarYear = year + 549; // Masih tahun lunar sebelumnya
+                lunarYear = year + 550; // Masih tahun lunar sebelumnya
             }
         }
         
